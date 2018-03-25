@@ -1,0 +1,13 @@
+Challenges:
+1. You cannot get Mini Resets. Reward: more Mini Resets (exponent goes up by 1/8 instead of 1/4).
+2. You cannot get First Resets. Reward: more First Resets (exponent goes up by 1/8 instead of 1/4).
+3. You cannot get Ultimate Resets. Reward: more Ultimate Resets (square rather than cube).
+4. Production multiplied by time since reset in minutes for first minute since reset.
+Reward: Production multiplied by inverse of time since reset in minutes for first minute since reset.
+5. Production multiplied by inverse of time since reset in minutes after first minute since reset.
+Reward: Production multiplied by time since reset in minutes after first minute since reset.
+6. First 8 resets of given type have half power. Reward: First 8 resets of given type have double power.
+7. All resets of given type after first 8 have half power.
+Reward: All resets of given type after first 8 have double power.
+
+(Benefits from challenges do not apply in those challenges.)

@@ -1,0 +1,20 @@
+Time Challenge 1: Tickspeed starts at 1T, and the first tickspeed you can buy costs 1T.
+Time Challenge 2: Whenever you buy anything, tickspeed (not upgrade power) moves logarithmically from its starting value to the correct value over 3 minutes.
+Time Challenge 3: Tickspeed decrease starts at 0% but grows over time in an infinity.
+(formula 1 - (1 + t * ((1 - decrease) ^ -1 - 1) / 30 minutes) ^ -1, so after 30 minutes it is what it should be).
+Time Challenge 4: Whenever you buy tickspeed, you lose all dimensions.
+Time Challenge 5: Buying 10 of a dimension multiplies its power by 1.5.
+(Tip: you can cheat this by being in Challenge 7)
+Time Challenge 6: Tickspeed is bought with dimension 2, without modified prices.
+Time Challenge 7: There are only 7 dimensions, but you get a (number of 7th dimension) ^ 7 boost to tickspeed.
+(the 7-dimension restriction holds in all challenges done within this challenge)
+Time Challenge 8: There are only 8 dimensions, but you get a free tickspeed boost when you buy tickspeed at a price where the exponent reaches a power of 2, starting with it being 8
+(the 8-dimension restriction holds in all challenges done within this challenge)
+(the tickspeed boost(s) is/are lost on infinity)
+Time Challenge 9: When the exponent of tickspeed cost is a square, the price increase becomes the square root of that
+(so it goes 1e3, 1e4, 1e6, 1e8, 1e10, 1e12, 1e14, 1e16, 1e20, 1e24, 1e28, e132, 1e36, 1e42, ...)
+Time Challenge 10: Tickspeed cost multiplies by 100.
+(so it goes 1e3, 1e5, 1e7, ...)
+Time Challenge 11: You can only buy 121 tickspeed upgrades.
+(for practical purposes, you're just getting tickspeed upgrades from Time Dimensions at this point.)
+Time Challenge 12: Time Challenges 1-11 combined.
