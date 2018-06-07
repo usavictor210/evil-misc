@@ -1,0 +1,4 @@
+at 2^2^32, we'll have 2^2^18 IP, giving ~2^8 RGs (more? less?).
+we'll have 2^13 mirrors
+thus it will take no more than 2^11 seconds, and likely less
+mirrors and RG grow inverse-quadratically, which manages to work really well

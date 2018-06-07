@@ -1,0 +1,28 @@
+Four normal things:
+16 replicanti, doubling: 1% more
+256 replicanti, doubling: cap x2
+16^8 replicanti, x16^4 for each: one more replicanti produced in replication
+16^16 replicanti, general cost (16^16)^(n^2): 1/16 stronger production after cap
+(percent divided by 2 ** (log(over cap) / (log(cap) * n)))
+but lose all other normal upgrades
+
+reset to gain the benefits of bought upgrades
+
+cap maxes out at 16^256
+
+Four IP upgrades:
+1 IP, doubling: 10% more at start
+16 IP, general cost 16^(n^2): can increase replicanti cap 16^16 higher
+16^4 IP, x16^4 for each: stronger IP formula (2x per infinity, increase to 3x, etc.)
+16^16 IP, general cost (16^16)^(n^2): more mirrors
+(get percent^n / 100 mirrors, (mirrors + 1) multiplies your replication number)
+but lose all upgrades and IP
+
+Also, autobuyers, but that's later.
+
+Note that 16^4 IP, x16^4 for each seems kind of weird, but it's required. Already, if you get 6.5e3 IP and get the upgrade, you just got a factor of 1.5^16 = 657 more IP. This makes a lot of stuff very easy to get.
+
+For each milestone you get 1% extra at start,
+and for every 4 milestones you get one more replicanti produced in replication
+
+milestones: 2^2^n replicanti for n from 0 on, 2^2^n IP for n from 0 on
