@@ -1,0 +1,174 @@
+items:
+there are five types of item: amulet, potion, book, wand
+all objects have color, same color is same thing
+books allow you to learn wand spells
+there are four types of effect: static, dip, change world, change self
+static effects: given upon pickup, lost upon drop
+only amulets have static effects
+dip effects: given upon dipping an item in
+only potions have dip effects
+change self effects: something happens to you
+everything but amulets
+
+traps of all change self effects can exist, except of those that immediately kill you
+
+every static effect has a corresponding change self effect that gives it
+
+static effects:
+
+luckiness (nothing when neutral, unluckiness when cursed)
+
+slow digestion (nothing when neutral, hunger when cursed)
+
+speed (nothing when neutral, slowness when cursed)
+
+better prices (half closer to fair if blessed, 25% closer to fair if neutral,
+twice as far from fair if cursed)
+
+dip effects:
+
+bless (just water when neutral, curse when cursed)
+
+change self effects:
+
+spacetime distortion (portal at your location when blessed,
+portal at your location to empty hard-to-enter (for others) universe when neutral,
+starts producing bad spacetime distortion and such when cursed)
+(s.d. -> b.s.d. -> very bad spacetime distortion -> antimatter)
+
+cake (helps with hunger, with the message "this cake is delicious!" if blessed,
+nothing, with the message "it is as if you didn't do anything", if neutral,
+-1 to int, with the message "the cake is a lie!" if cursed)
+
+combat (nearby monsters fight each other permanently if blessed,
+nearby monsters fight each other for a time if neutral,
+nearby monsters all turn their attention to you for a time if cursed)
+
+taming (nearby monsters all turn tamed if blessed, peaceful if neutral, hostile if cursed)
+
+scaring (nearby non-pet monsters are scared of you permanently if blessed, temporarily if neutral,
+you are scared of nearby non-pet monsters temporarily if cursed)
+
+charging (recharge chosen wand if blessed, remove all charge from chosen wand if neutral,
+discharge electricity, dealing damage, if cursed)
+
+lightening (gain ability to emit light if blessed, get a well-lit lamp if neutral,
+be hit by lightning if cursed)
+
+random action (do something random if blessed, do 1d6 random actions if neutral,
+die with the message "acting randomly always leads to death!" if cursed)
+
+rust (give all your items rust resistance if blessed,
+give one item you choose rust resistance if neutral,
+rust all your items if cursed)
+
+freeze (freezes for all of some number of turns if blessed,
+freezing goes gradually away over that many turns if neutral,
+speeding up goes gradually away over that many turns if cursed)
+(so freezing is like:
+0, 0, 0, 0, 0, 0, 12, 12, ...
+0, 2, 4, 6, 8, 10, 12, 12, ...
+24, 22, 20, 18, 16, 14, 12, 12, ...)
+
+wishing (gives you chosen item if blessed,
+gives you item from chosen category if neutral,
+takes away half your items if cursed)
+
+polymorph (changes you into chosen monster if blessed,
+changes you into random monster if neutral,
+changes you into frog if cursed)
+
+teleport (teleports you to chosen nearby location if blessed,
+teleports you to random nearby location if neutral,
+teleports you to random less nearby location if cursed)
+
++1 to chosen stat
+(random +1 to stat from chosen category when neutral,
+random -1 to stat from chosen category when cursed)
+
+gain level (start with random experience at new level if blessed,
+start with 0 if neutral, lose a level if cursed)
+
+restore health (restore full health if blessed, restore some health if neutral,
+remove some health if cursed)
+
+poison (cure poison if blessed, start a poison timer if neutral, die immediately if cursed)
+
+sacrifice (far stronger sacrifice if blessed, stronger sacrifice if neutral, no sacrifice if cursed)
+
+sake (always provides some nutrition)
+(no other effect if blessed, slightly confused if neutral, fully confused if cursed)
+
+magic (restore full magic power if blessed, restore some magic power if neutral,
+set magic power to 0 if cursed)
+
+fire (gain fire resistance if blessed, get burnt if neutral, get very burnt if cursed)
+
+water (gain underwater breathing if blessed, get water squirted on you if neutral,
+make location become a lake if cursed)
+
+poison resistance (gain poison resistance if blessed, gain insta-death poison resistance if neutral,
+make poison stronger against you if cursed)
+
+mine (lets you make something you see yours if blessed,
+creates a small mine you can travel to with no monsters under you if neutral,
+wounds legs and subtracts from health (a landmine) if cursed)
+
+acid/base (stops anyone else from going on current space when blessed (base),
+does nothing when neutral (water),
+gives acid damage when cursed (acid))
+
+enlightenment (enlightens you if blessed,
+randomly either changes your favor with major gods
+or makes you confused if neutral,
+kills you if cursed)
+
+earth (boulders drop on all squares around you but yours in blessed,
+all including yours if neutral, just yours if cursed)
+
+air (gives you ability to fly if blessed, teleports you up (either into the air (where you likely fall) or to the next/previous level) if neutral, hits you with a gust of wind if cursed)
+
+hole (to a pit if blessed, to level below if neutral, to random level below (with higher more likely) if cursed)
+
+bear trap (put enemy in a trap (bear trap) if blessed, get a bear trap in inventory if neutral, fall into a bear trap if cursed)
+
+duplication (create d3 copies of chosen item if blessed, create one copy of chosen item if neutral, destroy chosen item if cursed)
+
+identify (identify all items if blessed, identify one chosen item if neutral,
+"In your attempt to identify this object, you have made its effect on world state the identity function" if cursed)
+
+milk (gives lots of nutrition and health if blessed, some if normal, negative "This milk has gone sour!" if cursed)
+
+water is always clear
+sake is always strangely clear
+milk is always milky
+
+other colors:
+white
+black
+golden-colored
+silver-colored
+beige
+
+light, dark, normal for each:
+brown
+grey
+pink
+purple
+red
+orange
+yellow
+green
+blue
+cyan
+
+worshippers of Pelle know some of these things differently:
++1 to chosen stat: first dimension
+freeze: second dimension
+spacetime distortion: third dimension
+wish: fourth dimension
+speed: fifth dimension
+better prices: sixth dimension
+luckiness: seventh dimension
+sacrifice: eighth dimension
+cake: ninth dimension

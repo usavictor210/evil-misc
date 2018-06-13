@@ -1,0 +1,52 @@
+items and monsters:
+
+15 potions/wands (they're the same):
+bad:
+poison
+blindness
+confusion
+fire (burns you)
+lose item (makes you lose a random item)
+
+good:
+health
+sustenance (gives nutrition)
+scaring (makes you scarier)
+teleportation
+invisibility
+
+meta:
+resistance (gives resistance to chosen potion effect when used)
+charging (each carried wand is 20% of the time destroyed and otherwise given 0-3 more charges)
+identification (allows you to identify chosen item you have)
+randomness (gives independent random effect of other potion when used)
+nothing
+
+18 monsters:
+ant: fast, small (thus weak), poisonous, eats insects, sometimes comes in groups
+bat: fast, small, flying (can thus avoid non-flying), eats insects
+cat: normal, pet, nips sometimes but boosts magic
+dog: normal, pet
+elemental: earth digs pits, water splashes water (which can rust),
+fire attacks with fire, air blows you. Does not eat. Otherwise normal.
+fungus: does not move, randomly grows
+gnome: peaceful, intelligent, often has mining tools
+horse: normal, pet, herbivorous
+imp: intelligent, small, spawns more the further you go
+jackal: normal, sometimes comes in groups
+kobold: intelligent, fairly weak
+light: slow, but explodes, giving a random bad effect to adjacent,
+when it gets next to a monster, with a certain chance.
+Does not eat.
+millipede: slow, small, poisonous, eats insects
+nymph: intelligent, rather than attacking tries to steal items,
+starts with a teleport wand, teleports when in distress
+orc: intelligent, fairly strong. Basically just stronger kobold
+bug (x): very small (so very weak), not poisonous, does leave corpse
+newt (:): small, boosts magic a bit (permanently) if eaten
+demon (&): intelligent, large, spawns more the further you go,
+starts with some bad wands, can also summon other monsters once
+(including, perhaps, more demons) (not more than once to prevent demon explosion)
+
+Tonight I have to find somewhere safe to put this file since I like it but not right now.
+I think evil-misc works.
