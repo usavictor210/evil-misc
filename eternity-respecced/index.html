@@ -1034,7 +1034,7 @@
                             <div id="Costco sells dimboosts now" class="achievement achievementlocked" style="background-image: url(images/65.png)" ach-tooltip="Bulk 750 soft resets at once. Reward: Soft resets are 1% more powerful (to normal dims)."><br></div>
                         </td>
                         <td>
-                            <div id="This mile took an Eternity" class="achievement achievementlocked" style="background-image: url(images/66.png)" ach-tooltip="Get all eternity milestones. Reward: Gain a small bonus to time dimensions based on amount eternitied."><br></div>
+                            <div id="This mile took an Eternity" class="achievement achievementlocked" style="background-image: url(images/66.png)" ach-tooltip="Get all eternity milestones. Reward: Gain a small bonus to time dimensions based on eternities."><br></div>
                         </td>
                         <td>
                             <div id="This achievement doesn't exist II" class="achievement achievementlocked" style="background-image: url(images/67.png)" ach-tooltip="Reach 9.99999e999 IP. Reward: Gain more IP based on amount of antimatter you had when crunching."><br></div>
@@ -1043,16 +1043,16 @@
                             <div id="That wasn't an eternity" class="achievement achievementlocked" style="background-image: url(images/68.png)" ach-tooltip="Eternity in under 30 seconds. Reward: Start eternities with 2e25 IP."><br></div>
                         </td>
                         <td>
-                            <div id="Infinite time" class="achievement achievementlocked" style="background-image: url(images/69.png)" ach-tooltip="Get 308 tickspeed upgrades (in one eternity) from time dimensions. Reward: Time dimensions are affected slightly more by tickspeed."><br></div>
+                            <div id="Infinite time" class="achievement achievementlocked" style="background-image: url(images/69.png)" ach-tooltip="Get 308 tickspeed upgrades (in one eternity) from time dimensions. Reward: Time dimensions are very slightly affected by tickspeed."><br></div>
                         </td>
                         <td>
-                            <div id="The swarm" class="achievement achievementlocked" style="background-image: url(images/70.png)" ach-tooltip="Get 10 replicanti galaxies in 15 seconds."><br></div>
+                            <div id="The swarm" class="achievement achievementlocked" style="background-image: url(images/70.png)" ach-tooltip="Get 10 replicanti galaxies in 15 seconds. Reward: Unlock replicanti galaxy power control."><br></div>
                         </td>
                         <td>
-                            <div id="Do you really need a guide for this?" class="achievement achievementlocked" style="background-image: url(images/71.png)" ach-tooltip="Eternity with the infinitied stat under 10."><br></div>
+                            <div id="Do you really need a guide for this?" class="achievement achievementlocked" style="background-image: url(images/71.png)" ach-tooltip="Get more replicanti than your total antimatter. Reward: Replicanti increase faster the more you have."><br></div>
                         </td>
                         <td>
-                            <div id="We could afford 9" class="achievement achievementlocked" style="background-image: url(images/72.png)" ach-tooltip="Eternity with exactly 9 replicanti."><br></div>
+                            <div id="We could afford 9" class="achievement achievementlocked" style="background-image: url(images/72.png)" ach-tooltip="Eternity with exactly 9 replicanti. Reward: Replicanti multiplier to ID is 9% stronger."><br></div>
                         </td>
                     </tr>
             </table>
@@ -1901,6 +1901,11 @@
                 <button class="storebtn" id="replicantireset" onclick="replicantiGalaxy()" style="width: 200px; height: 70px; font-size: 12px">Reset replicanti amount, but get a free galaxy</button>
                 <br>
                 <button class="storebtn" id="replicantiresettoggle" onclick="replicantiGalaxyAutoToggle()" style="width: 150px; height: 30px; font-size: 12px; display: none">Auto galaxy OFF</button>
+                <div id="replicantigalaxypowerdiv" style="display: none;">
+                  Galaxy strength: <input type="text" onchange="setReplicantiNewGalaxyStrength()" id="galStrength"></input>
+                  <br>
+                  Replicanti needed to get a galaxy: <input type="text" onchange="setReplicantiNewLimit()" id="replLimit"></input>
+                </div>
             </div>
             <div id="footercontainer">
                     <table id="footer">
