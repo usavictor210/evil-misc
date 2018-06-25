@@ -541,6 +541,10 @@ function onLoad() {
         }
     }
 
+    if (new Decimal(5).eq(player.timeDimension2.cost)) {
+      player.timeDimension2.cost = 10;
+    }
+
     if (player.infinityDimension1.baseAmount === undefined) {
         player.infinityDimension1.baseAmount = 0;
         player.infinityDimension2.baseAmount = 0;
@@ -1154,6 +1158,7 @@ function getDimensionFinalMultiplier(tier) {
     if (player.achievements.includes("r65") && player.currentChallenge != "" && player.thisInfinityTime < 1800) multiplier = multiplier.times(Math.max(2400/(player.thisInfinityTime+600), 1))
     if (player.achievements.includes("r91") && player.thisInfinityTime < 50) multiplier = multiplier.times(Math.max(301-player.thisInfinityTime*6, 1))
     if (player.achievements.includes("r92") && player.thisInfinityTime < 600) multiplier = multiplier.times(Math.max(101-player.thisInfinityTime/6, 1));
+    if (player.achievements.includes("r98")) multiplier = multiplier.times(player.infinityDimension8.amount.max(1));
     if (player.achievements.includes("r84")) multiplier = multiplier.times(player.money.pow(0.00004).plus(1));
     else if (player.achievements.includes("r73")) multiplier = multiplier.times(player.money.pow(0.00002).plus(1));
 
@@ -1404,7 +1409,7 @@ function updateDimensions() {
     document.getElementById("offlineProd").innerHTML = "Generates "+player.offlineProd+"% > "+Math.max(Math.max(5, player.offlineProd + 5), Math.min(50, player.offlineProd + 5))+"% of your best IP/min from last 10 infinities, works offline<br>Currently: "+shortenMoney(bestRunIppm.times(player.offlineProd/100)) +"IP/min<br> Cost: "+shortenCosts(player.offlineProdCost)+" IP"
     if (player.offlineProd == 50) document.getElementById("offlineProd").innerHTML = "Generates "+player.offlineProd+"% of your best IP/min from last 10 infinities, works offline<br>Currently: "+shortenMoney(bestRunIppm.times(player.offlineProd/100)) +" IP/min"
 
-    document.getElementById("eter1").innerHTML = "Infinity Dimensions multiplier based on unspent EP (x+1)^3<br>Currently: "+shortenMoney(player.eternityPoints.plus(1).pow(3))+"x<br>Cost: 5 EP"
+    document.getElementById("eter1").innerHTML = "Infinity Dimensions multiplier based on unspent EP (x+1)<br>Currently: "+shortenMoney(player.eternityPoints.plus(1))+"x<br>Cost: 5 EP"
     document.getElementById("eter2").innerHTML = "Infinity Dimension multiplier based on eternities (x^log4(2x))<br>Currently: "+shortenMoney(Decimal.pow(player.eternities, Math.log(player.eternities*2)/Math.log(4)))+"x<br>Cost: 10 EP"
     document.getElementById("eter3").innerHTML = "Infinity Dimensions multiplier based on sum of Infinity Challenge times<br>Currently: "+shortenMoney(Decimal.pow(2,300/infchallengeTimes))+"x<br>Cost: "+shortenCosts(50e3)+" EP"
 }
@@ -1557,7 +1562,7 @@ function DimensionPower(tier) {
     }
 
     if (player.eternityUpgrades.includes(1)) {
-        mult = mult.times(player.eternityPoints.plus(1).pow(3))
+        mult = mult.times(player.eternityPoints.plus(1))
     }
 
     if (player.eternityUpgrades.includes(2)) mult = mult.times(Decimal.pow(player.eternities, Math.log(player.eternities*2+1)/Math.log(4)))
@@ -1693,13 +1698,20 @@ var infDimPow = 1
 
 //time dimensions
 
+function getPower(dim) {
+  var ret = dim.power;
+  if (player.achievements.includes('r102')) {
+    ret = ret.times(1 + Math.log(player.eternities) / Math.log(100));
+  }
+  return ret;
+}
+
 
 function getTimeDimensionProduction(tier) {
     var dim = player["timeDimension"+tier]
-    var ret = dim.amount.times(dim.power)
-    if (player.achievements.includes('r102')) {
-      ret = ret.times(1 + Math.log(player.eternities) / Math.log(100));
-    }
+    var ret = dim.amount.times(getPower(dim))
+    // effect of tickspeed, which is not part of power
+    // (see, for example, normal dimensions)
     if (player.achievements.includes('r105')) {
       ret = ret.times(player.tickspeed.pow(-1e-5));
     }
@@ -1728,21 +1740,19 @@ function getTimeDimensionDescription(tier) {
 
 function updateTimeDimensions() {
     for (let tier = 1; tier <= 4; ++tier) {
-        document.getElementById("timeD"+tier).innerHTML = DISPLAY_NAMES[tier] + " Dimension x" + shortenMoney(player["timeDimension" + tier].power);
+        document.getElementById("timeD"+tier).innerHTML = DISPLAY_NAMES[tier] + " Dimension x" + shortenMoney(getPower(player["timeDimension" + tier]));
         document.getElementById("timeAmount"+tier).innerHTML = getTimeDimensionDescription(tier);
     }
 }
 
 var timeDimCostMults = [null, 3, 9, 27, 81]
 function buyTimeDimension(tier) {
-
     var dim = player["timeDimension"+tier]
     if (player.eternityPoints.lt(dim.cost)) return false
-
     player.eternityPoints = player.eternityPoints.minus(dim.cost)
     dim.amount = dim.amount.plus(1);
     dim.bought += 1
-    dim.cost *= timeDimCostMults[tier]
+    dim.cost = Math.pow(10, tier - 1) * Math.pow(timeDimCostMults[tier], dim.bought)
     dim.power *= 2
 }
 
@@ -1829,6 +1839,8 @@ function respecTimeStudies() {
       player.timestudy.studies[i] = 0;
     }
   }
+  updateTheoremButtons();
+  updateTimeStudyButtons();
 }
 
 
@@ -2289,13 +2301,18 @@ function clearOldAchieves(){
 
 function setReplicantiNewGalaxyStrength () {
   let galPower = +document.getElementById('galStrength').value;
-  player.replicanti.newLimit = Decimal.pow(2, Decimal.pow(2, galStrength * 10));
-  document.getElementById('replLimit').value = player.replicanti.newLimit.toString();
+  if (galPower >= 0) {
+    player.replicanti.newLimit = Decimal.pow(2, Decimal.pow(2, galStrength * 10));
+    document.getElementById('replLimit').value = player.replicanti.newLimit.round(3);
+  }
 }
 
 function setReplicantiNewGalaxyStrength () {
-  player.replicanti.newLimit = new Decimal(document.getElementById('replLimit').value);
-  document.getElementById('galStrength').value = Math.round(getReplicantiGalaxyPower(), 3);
+  let newLimit = new Decimal(document.getElementById('replLimit').value);
+  if (newLimit.gte(2)) {
+    player.replicanti.newLimit = new Decimal(document.getElementById('replLimit').value);
+    document.getElementById('galStrength').value = Math.round(getReplicantiGalaxyPower(), 3);
+  }
 }
 
 function giveAchievement(name) {
@@ -3171,7 +3188,7 @@ function updateInfCosts() {
     document.getElementById("replicantichance").className = (player.infinityPoints.gte(player.replicanti.chanceCost) && player.replicanti.chance < 1) ? "storebtn" : "unavailablebtn"
     document.getElementById("replicantiinterval").className = (player.infinityPoints.gte(player.replicanti.intervalCost) && (player.replicanti.interval !== 1)) ? "storebtn" : "unavailablebtn"
     document.getElementById("replicantimax").className = (player.infinityPoints.gte(player.replicanti.galCost)) ? "storebtn" : "unavailablebtn"
-    document.getElementById("replicantireset").className = (player.replicanti.galaxies < player.replicanti.gal && player.replicanti.amount == Number.MAX_VALUE) ? "storebtn" : "unavailablebtn"
+    document.getElementById("replicantireset").className = (player.replicanti.galaxies < player.replicanti.gal && player.replicanti.amount.gte(player.replicanti.limit)) ? "storebtn" : "unavailablebtn"
     document.getElementById("replicantiunlock").className = (player.infinityPoints.gte(1e140)) ? "storebtn" : "unavailablebtn"
 
 
@@ -3812,7 +3829,7 @@ function setAchieveTooltip() {
     potato.setAttribute('ach-tooltip', "Get more than " + formatValue(player.options.notation, 1e26, 0, 0) + " ticks per second. Reward: Reduces starting tick interval by 2%");
     dimensional.setAttribute('ach-tooltip', "Reach " + formatValue(player.options.notation, 1e12, 0, 0) + " of all dimensions except 8th");
     IPBelongs.setAttribute('ach-tooltip', "Big Crunch for "+shortenCosts(1e150)+" IP. Reward: Additional 4x multiplier to IP")
-    reference.setAttribute('ach-tooltip', "Get a x"+shortenDimensions(Number.MAX_VALUE)+" multiplier in a single sacrifice. Reward: Sacrifices are stronger.")
+    reference.setAttribute('ach-tooltip', "Get a x"+shortenDimensions(Number.MAX_VALUE)+" multiplier in a single sacrifice. Reward: Sacrifice is slightly stronger.")
 }
 
 document.getElementById("notation").onclick = function () {
@@ -5533,7 +5550,7 @@ function startInterval() {
         replicantiTicks %= interval;
         player.replicanti.amount = player.replicanti.amount.times(Decimal.pow(2, doublings)).min(player.replicanti.limit)
 
-        if (player.replicanti.amount.gte(player.totalmoney)) {
+        if (player.replicanti.amount.gt(player.totalmoney.max(10))) {
           giveAchievement("Do you really need a guide for this?");
         }
 

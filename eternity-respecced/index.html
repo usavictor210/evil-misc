@@ -99,25 +99,37 @@
                 </tr>
             </table>
             <div class="eternitytab" id="timestudies" style="font-size: 15px">
-                <div><button class="storebtn" onclick="respecToggle()" id="respec" style="width:150px; height: 40px; font-size: 10px; margin: auto">Respec time studies on next Eternity</button></div>
-                <button class="timetheorembtn" onclick="buyWithAntimatter()" id="theoremam">Buy Time Theorems <br>Cost: 1e20000 antimatter</button>
-                <button class="timetheorembtn" onclick="buyWithIP()" id="theoremip">Buy Time Theorems <br>Cost: 1 IP</button>
-                <button class="timetheorembtnlocked" onclick="buyWithEP()" id="theoremep">Buy Time Theorems <br>Cost: 1 EP</button>
-
-                <p id="timetheorems">You have 0 Time Theorems.</p>
-                <table class="table" style="margin: 0 auto">
+                <div><button class="storebtn" onclick="respecToggle()" id="respec" style="width:150px; height: 40px; font-size: 10px; margin: auto">Respec time studies on next Eternity</button>
+                </div>
+                <table class="table" style="margin: 0 auto;">
+                  <tr>
+                      <td>
+                        <button class="timetheorembtn" onclick="buyWithAntimatter()" id="theoremam">Buy Time Theorems <br>Cost: 1e20000 antimatter</button>
+                      </td>
+                      <td>
+                        <button class="timetheorembtn" onclick="buyWithIP()" id="theoremip">Buy Time Theorems <br>Cost: 1 IP</button>
+                      </td>
+                      <td>
+                        <button class="timetheorembtnlocked" onclick="buyWithEP()" id="theoremep">Buy Time Theorems <br>Cost: 1 EP</button>
+                      </td>
+                  </tr>
+                </table>
+                <p id="timetheorems" style="margin: 0 auto;">You have 0 Time Theorems.</p>
+                <table class="table" style="margin: 0 auto;">
                     <tr>
                         <td>
-                            <button id="ts1" class="eternityupbtn" onclick="buyTimeStudy(1)">Sacrifice is 10% stronger<br>Bought: <span id="ts1bought">x</span><br>Cost: <span id="ts1cost">x</span> TT</button>
+                            <button id="ts1" class="eternityupbtn" onclick="buyTimeStudy(1)">Sacrifice is 10% stronger<br/>Bought: <span id="ts1bought">x</span><br/>Cost: <span id="ts1cost">x</span> TT</button>
                         </td>
                         <td>
-                            <button id="ts2" class="eternityupbtn" onclick="buyTimeStudy(2)">You get 10% more tickspeed upgrades from time dimensions<br>Bought: <span id="ts2bought">x</span><br>Cost: <span id="ts2cost">x</span> TT</button>
+                            <button id="ts2" class="eternityupbtn" onclick="buyTimeStudy(2)">You get 10% more tickspeed upgrades from time dimensions<br/>Bought: <span id="ts2bought">x</span><br/>Cost: <span id="ts2cost">x</span> TT</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <button id="ts3" class="eternityupbtn" onclick="buyTimeStudy(3)">Replicanti multiplier to ID is 25% stronger<br/>Bought: <span id="ts3bought">x</span><br/>Cost: <span id="ts3cost">x</span> TT</button>
                         </td>
                         <td>
-                            <button id="ts3" class="eternityupbtn" onclick="buyTimeStudy(3)">Replicanti multiplier to ID is 25% stronger<br>Bought: <span id="ts3bought">x</span><br>Cost: <span id="ts3cost">x</span> TT</button>
-                        </td>
-                        <td>
-                            <button id="ts4" class="eternityupbtn" onclick="buyTimeStudy(4)">Dimension boost multiplier is incremented<br>Bought: <span id="ts4bought">x</span><br>Cost: <span id="ts4cost">x</span> TT</button>
+                            <button id="ts4" class="eternityupbtn" onclick="buyTimeStudy(4)">Dimension boost multiplier is incremented<br/>Bought: <span id="ts4bought">x</span><br/>Cost: <span id="ts4cost">x</span> TT</button>
                         </td>
                     </tr>
                 </table>
@@ -143,13 +155,13 @@
                 <table class="table" style="margin: 0 auto">
                     <tr>
                         <td>
-                            <button id="eter1" class="eternityupbtn" onclick="buyEternityUpgrade(1, 5)">Infinity Dimensions multiplier equal to unspent EP to the power of 5.<br>Currently: x<br>Cost: 5 EP</button>
+                            <button id="eter1" class="eternityupbtn" onclick="buyEternityUpgrade(1, 5)">Infinity Dimensions multiplier based on unspent EP (x+1)<br>Currently: x<br>Cost: 5 EP</button>
                         </td>
                         <td>
-                            <button id="eter2" class="eternityupbtn" onclick="buyEternityUpgrade(2, 10)">You gain Infinity Dimension multiplier based on eternities (x^log4(2x))<br>Currently: x<br>Cost: 10 EP</button>
+                            <button id="eter2" class="eternityupbtn" onclick="buyEternityUpgrade(2, 10)">"Infinity Dimension multiplier based on eternities (x^log4(2x))<br>Currently: x<br>Cost: 10 EP</button>
                         </td>
                         <td>
-                            <button id="eter3" class="eternityupbtn" onclick="buyEternityUpgrade(3, 50e3)">Infinity Dimensions multiplier based on sum of Infinity Challenge times<br>Currently: Xx<br>Cost: 50 K EP</button>
+                            <button id="eter3" class="eternityupbtn" onclick="buyEternityUpgrade(3, 50e3)">Infinity Dimensions multiplier based on sum of Infinity Challenge times<br>Currently: x<br>Cost: 50 K EP</button>
                         </td>
                     </tr>
                 </table>
@@ -190,7 +202,7 @@
                     </tr>
                     <tr>
                         <td class="milestoneText">5 Eternities - </td>
-                        <td><button class="milestonerewardlocked" id="reward4" style="font-size: 12px">Unlock more big crunch autobuyer options.</button></td>
+                        <td><button class="milestonerewardlocked" id="reward4" style="font-size: 12px">Unlock more big crunch autobuyer options</button></td>
                     </tr>
                     <tr>
                         <td class="milestoneText">7 Eternities - </td>
@@ -965,7 +977,7 @@
                             <div id="End me" class="achievement achievementlocked" style="background-image: url(images/44.png)" ach-tooltip="Get the sum of all best challenge times under 5 seconds. Reward: All dimensions 40% stronger, but only in challenges"><br></div>
                         </td>
                         <td>
-                            <div id="NEW DIMENSIONS???" class="achievement achievementlocked" style="background-image: url(images/45.png)" ach-tooltip="Unlock the 4th Infinity Dimension"><br></div>
+                            <div id="NEW DIMENSIONS???" class="achievement achievementlocked" style="background-image: url(images/45.png)" ach-tooltip="Unlock the 4th Infinity Dimension."><br></div>
                         </td>
                         <td>
                             <div id="Spreading Cancer" class="achievement achievementlocked" style="background-image: url(images/46.png)" ach-tooltip="Buy ten Galaxies in total while using cancer notation."><br></div>
@@ -1000,7 +1012,7 @@
                             <div id="2 Million Infinities" class="achievement achievementlocked" style="background-image: url(images/55.png)" ach-tooltip="Infinity 2000000 times. Reward: Infinities more than 5 seconds long give 250 infinitied stat."><br></div>
                         </td>
                         <td>
-                            <div id="Yet another infinity reference" class="achievement achievementlocked" style="background-image: url(images/56.png)" ach-tooltip="Get xInfinity multiplier in a single sacrifice. Reward: Sacrifices are stronger."><br></div>
+                            <div id="Yet another infinity reference" class="achievement achievementlocked" style="background-image: url(images/56.png)" ach-tooltip="Get xInfinity multiplier in a single sacrifice. Reward: Sacrifice is slightly stronger."><br></div>
                         </td>
                     </tr>
                     <tr id="achRow9">
@@ -1020,13 +1032,13 @@
                             <div id="Is this safe?" class="achievement achievementlocked" style="background-image: url(images/61.png)" ach-tooltip="Gain Infinite replicanti in 30 minutes. Reward: Infinity doesn't reset your replicanti amount"><br></div>
                         </td>
                         <td>
-                            <div id="Time is relative" class="achievement achievementlocked" style="background-image: url(images/62.png)" ach-tooltip="Go Eternal."><br></div>
+                            <div id="Time is relative" class="achievement achievementlocked" style="background-image: url(images/62.png)" ach-tooltip="Go Eternal. Reward: Unlock Time Dimensions and eternity tab."><br></div>
                         </td>
                         <td>
-                            <div id="Yes. This is hell." class="achievement achievementlocked" style="background-image: url(images/63.png)" ach-tooltip="Get the sum of Infinity Challenge times under 5 seconds."><br></div>
+                            <div id="Yes. This is hell." class="achievement achievementlocked" style="background-image: url(images/63.png)" ach-tooltip="Get the sum of Infinity Challenge times under 5 seconds. Reward: Sacrifice is again slightly stronger."><br></div>
                         </td>
                         <td>
-                            <div id="0 degrees from infinity" class="achievement achievementlocked" style="background-image: url(images/64.png)" ach-tooltip="Unlock the 8th Infinity Dimension"><br></div>
+                            <div id="0 degrees from infinity" class="achievement achievementlocked" style="background-image: url(images/64.png)" ach-tooltip="Unlock the 8th Infinity Dimension. Reward: Normal dimensions are multiplied by number of 8th Infinity Dimensions you have."><br></div>
                         </td>
                     </tr>
                     <tr id="achRow10">
@@ -1052,7 +1064,7 @@
                             <div id="Do you really need a guide for this?" class="achievement achievementlocked" style="background-image: url(images/71.png)" ach-tooltip="Get more replicanti than your total antimatter. Reward: Replicanti increase faster the more you have."><br></div>
                         </td>
                         <td>
-                            <div id="We could afford 9" class="achievement achievementlocked" style="background-image: url(images/72.png)" ach-tooltip="Eternity with exactly 9 replicanti. Reward: Replicanti multiplier to ID is 9% stronger."><br></div>
+                            <div id="We could afford 9" class="achievement achievementlocked" style="background-image: url(images/72.png)" ach-tooltip="Eternity with exactly 9 replicanti. Reward: Replicanti multiplier to ID is 9% stronger (after time studies)."><br></div>
                         </td>
                     </tr>
             </table>
