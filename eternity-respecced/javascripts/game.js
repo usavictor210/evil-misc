@@ -5550,7 +5550,7 @@ function startInterval() {
         replicantiTicks %= interval;
         player.replicanti.amount = player.replicanti.amount.times(Decimal.pow(2, doublings)).min(player.replicanti.limit)
 
-        if (player.replicanti.amount.gt(player.totalmoney.max(10))) {
+        if (player.replicanti.amount.gte(Decimal.pow(10, 1e6))) {
           giveAchievement("Do you really need a guide for this?");
         }
 
