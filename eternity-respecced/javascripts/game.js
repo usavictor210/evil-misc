@@ -799,9 +799,10 @@ function onLoad() {
     }
     document.getElementById("epmult").innerHTML = "You gain 5 times more EP<p>Currently: "+shortenDimensions(player.epmult)+"x<p>Cost: "+shortenDimensions(player.epmultCost)+" EP"
 
-    toggleCrunchMode()
-    toggleCrunchMode()
-    toggleCrunchMode()
+    let numCrunchModes = 4;
+    for (let i = 0; i < numCrunchModes; i++) {
+      toggleCrunchMode()
+    }
 
 
     if (player.options.newsHidden) {
@@ -943,7 +944,9 @@ function transformSaveToDecimal() {
 
     player.autoIP = new Decimal(player.autoIP)
 
-    if (player.autobuyers[11].priority !== undefined && player.autobuyers[11].priority !== null && player.autobuyers[11].priority !== "undefined")player.autobuyers[11].priority = new Decimal(player.autobuyers[11].priority)
+    if (!['undefined', 'null', 'max'].includes(player.autobuyers[11].priority)) {
+      player.autobuyers[11].priority = new Decimal(player.autobuyers[11].priority);
+    }
 
     player.epmultCost = new Decimal(player.epmultCost)
     player.eternityBuyer.limit = new Decimal(player.eternityBuyer.limit)
@@ -965,6 +968,7 @@ function loadAutoBuyerSettings() {
     document.getElementById("bulkDimboost").value = player.autobuyers[9].bulk
     document.getElementById("prioritySac").value = player.autoSacrifice.priority
     document.getElementById("bulkgalaxy").value = player.autobuyers[10].bulk
+    document.getElementById("maxReplicantiCrunchSwitch").checked = player.autobuyers[11].requireMaxReplicanti;
     document.getElementById("priority13").value = player.eternityBuyer.limit
 
 }
@@ -1353,24 +1357,18 @@ function updateDimensions() {
     document.getElementById("galaxies").innerHTML = 'You have ' + Math.round(player.galaxies) + ' Antimatter Galaxies.';
     document.getElementById("totalTime").innerHTML = "You have played for " + timeDisplay(player.totalTimePlayed) + ".";
 
-    if (player.bestInfinityTime == 9999999999) {
+    if (player.infinitied === 0 && player.eternities === 0) {
         document.getElementById("bestInfinity").innerHTML = ""
         document.getElementById("infinitied").innerHTML = ""
         document.getElementById("thisInfinity").innerHTML = ""
     } else {
         document.getElementById("bestInfinity").innerHTML = "Your fastest Infinity is in " + timeDisplay(player.bestInfinityTime) + "."
         document.getElementById("thisInfinity").innerHTML = "You have spent " + timeDisplay(player.thisInfinityTime) + " in this Infinity."
-        if (player.infinityPoints.equals(1)) {
-            document.getElementById("infinityPoints1").innerHTML = "You have 1 Infinity point."
-            document.getElementById("infinityPoints2").innerHTML = "You have 1 Infinity point."
-        }
-        else {
-            document.getElementById("infinityPoints1").innerHTML = "You have <span class=\"IPAmount1\">"+shortenDimensions(player.infinityPoints)+"</span> Infinity points."
-            document.getElementById("infinityPoints2").innerHTML = "You have <span class=\"IPAmount2\">"+shortenDimensions(player.infinityPoints)+"</span> Infinity points."
-        }
-        if (player.infinitied == 1) document.getElementById("infinitied").innerHTML = "You have infinitied 1 time."
-        else document.getElementById("infinitied").innerHTML = "You have infinitied " + player.infinitied + " times."
-
+        let ipPlural = player.infinityPoints.equals(1) ? '' : 's';
+        document.getElementById("infinityPoints1").innerHTML = "You have <span class=\"IPAmount1\">"+shortenDimensions(player.infinityPoints)+"</span> Infinity point" + ipPlural + ".";
+        document.getElementById("infinityPoints2").innerHTML = "You have <span class=\"IPAmount2\">"+shortenDimensions(player.infinityPoints)+"</span> Infinity point" + ipPlural + ".";
+        let infPlural = player.infinitied == 1 ? '' : 's';
+        document.getElementById("infinitied").innerHTML = "You have infinitied " + player.infinitied + " time" + infPlural + ".";
     }
 
     if (player.eternities == 0) {
@@ -1853,9 +1851,11 @@ function getDimensionBoostPower() {
     if (player.challenges.includes("postc7")) ret = 4
     if (player.currentChallenge == "postc7") ret = 10
 
-    if (player.achievements.includes("r101")) ret = ret*1.01
+    // Be nice to the player; multiply before adding rather than vice versa.
 
     ret += player.timestudy.studies[4];
+
+    if (player.achievements.includes("r101")) ret = ret*1.01
 
     return ret
 }
@@ -2404,13 +2404,14 @@ function canBuyDimension(tier) {
     return true;
 }
 
+// This is for buying a dimensions.
 function getDimensionPowerMultiplier(tier) {
     let dimMult = 2;
-
 
     if (player.currentChallenge == "challenge9" || player.currentChallenge == "postc1") dimMult = Math.pow(10/0.30,Math.random())*0.30
 
     if (player.infinityUpgrades.includes('dimMult')) dimMult *= 1.1;
+    // Reward for "Is this hell?"
     if (player.achievements.includes("r58")) dimMult *= 1.01;
 
     return dimMult;
@@ -3259,6 +3260,14 @@ function getReplMult () {
   return Decimal.pow(Math.max(player.replicanti.amount.log(2), 1), exp);
 }
 
+function galaxyModeCrunch () {
+  let neededGalaxies = (player.autobuyers[11].priority === 'max') ?
+  new Decimal(player.replicanti.gal) : player.autobuyers[11].priority;
+  return neededGalaxies.lte(player.replicanti.galaxies) && (
+    !player.autobuyers[11].requireMaxReplicanti ||
+    player.replicanti.amount.gte(player.replicanti.limit))
+}
+
 function updateMilestones() {
     if (player.eternities > 0) document.getElementById("reward1").className = "milestonereward"
     if (player.eternities > 1) document.getElementById("reward2").className = "milestonereward"
@@ -3311,14 +3320,28 @@ function toggleCrunchMode() {
         player.autoCrunchMode = "time"
         document.getElementById("togglecrunchmode").innerHTML = "Auto crunch mode: time"
         document.getElementById("limittext").innerHTML = "Seconds between crunches:"
-    } else if (player.autoCrunchMode == "time"){
+        document.getElementById("maxReplicantiCrunchSwitchDiv").style.display = 'none';
+    } else if (player.autoCrunchMode == "time") {
         player.autoCrunchMode = "relative"
         document.getElementById("togglecrunchmode").innerHTML = "Auto crunch mode: X times last crunch"
         document.getElementById("limittext").innerHTML = "X times since last crunch:"
+        document.getElementById("maxReplicantiCrunchSwitchDiv").style.display = 'none';
+    } else if (player.autoCrunchMode == "relative") {
+        player.autoCrunchMode = "replicanti"
+        document.getElementById("togglecrunchmode").innerHTML = "Auto crunch mode: replicanti galaxies"
+        document.getElementById("limittext").innerHTML = "Replicanti galaxies needed for crunch:"
+        document.getElementById("maxReplicantiCrunchSwitchDiv").style.display = 'inline';
     } else {
         player.autoCrunchMode = "amount"
         document.getElementById("togglecrunchmode").innerHTML = "Auto crunch mode: amount"
         document.getElementById("limittext").innerHTML = "Amount of IP to wait until reset:"
+        document.getElementById("maxReplicantiCrunchSwitchDiv").style.display = 'none';
+    }
+    if (player.autobuyers[11].priority === 'max' || document.getElementById('priority12').value.slice(0, 3) === 'max') {
+        if (player.autoCrunchMode !== 'replicanti') {
+          player.autobuyers[11].priority = new Decimal(Infinity);
+        }
+        updatePriorities();
     }
 }
 
@@ -4130,7 +4153,7 @@ function updateAutobuyers() {
 
     player.autoSacrifice.isOn = document.getElementById("13ison").checked
     player.eternityBuyer.isOn = document.getElementById("eternityison").checked
-    priorityOrder()
+    priorityOrder();
 }
 
 
@@ -4185,9 +4208,15 @@ function updatePriorities() {
     player.autobuyers[9].priority = parseInt(document.getElementById("priority10").value)
     player.autobuyers[10].priority = parseInt(document.getElementById("priority11").value)
     var infvalue = document.getElementById("priority12").value
-    if (infvalue !== undefined && infvalue !== "undefined") infvalue = new Decimal(infvalue)
-    else infvalue = new Decimal(Infinity)
+    if (infvalue.slice(0, 3) === 'max' && player.autoCrunchMode === 'replicanti') {
+      infvalue = 'max';
+    } else if (infvalue.slice(0, 3) === 'inf' || '' + infvalue === undefined || Number.isNaN(new Decimal(infvalue).mantissa)) {
+      infvalue = new Decimal(Infinity);
+    } else {
+      infvalue = new Decimal(infvalue);
+    }
     player.autobuyers[11].priority = infvalue
+    player.autobuyers[11].requireMaxReplicanti = document.getElementById('maxReplicantiCrunchSwitch').checked;
     var bulk = Math.max(parseFloat(document.getElementById("bulkDimboost").value), 0.05)
     if (isNaN(bulk)) bulk = 1
     player.autobuyers[9].bulk = bulk
@@ -4214,8 +4243,7 @@ function updateCheckBoxes() {
     }
     if (player.autoSacrifice.isOn) document.getElementById("13ison").checked = "true"
     else document.getElementById("13ison").checked = ""
-    document.getElementById("eternityison").checked = player.eternityBuyer.isOn
-
+    document.getElementById("eternityison").checked = player.eternityBuyer.isOn;
 }
 
 
@@ -4657,7 +4685,8 @@ function eternity() {
             player.bestEternity = player.thisEternity
             if (player.bestEternity < 300) giveAchievement("That wasn't an eternity");
         }
-        if (Math.round(player.replicanti.amount) == 9) giveAchievement("We could afford 9");
+        // This .toFixed(0) is, it seems, just what is done in display.
+        if (player.replicanti.amount.toFixed(0) === '9') giveAchievement("We could afford 9");
         temp = []
         player.eternityPoints = player.eternityPoints.plus(gainedEternityPoints())
         addEternityTime(player.thisEternity, gainedEternityPoints())
@@ -5956,18 +5985,23 @@ function autoBuyerTick() {
     if (player.autobuyers[11]%1 !== 0) {
     if (player.autobuyers[11].ticks*100 >= player.autobuyers[11].interval && player.money.gte(Number.MAX_VALUE)) {
         if (player.autobuyers[11].isOn) {
-            if (player.autoCrunchMode == "amount") {
+            if (player.autoCrunchMode === "amount") {
                 if (!player.break || player.currentChallenge != "" || player.autobuyers[11].priority.lt(gainedInfinityPoints())) {
                     autoS = false;
                     document.getElementById("bigcrunch").click()
                 }
-            } else if (player.autoCrunchMode == "time"){
+            } else if (player.autoCrunchMode === "time"){
                 if (!player.break || player.currentChallenge != "" || player.autobuyers[11].priority.lt(player.thisInfinityTime/10)) {
                     autoS = false;
                     document.getElementById("bigcrunch").click()
                 }
-            } else {
+            } else if (player.autoCrunchMode === "relative") {
                 if (!player.break || player.currentChallenge != "" || gainedInfinityPoints().gte(player.lastTenRuns[0][1].times(player.autobuyers[11].priority))) {
+                    autoS = false;
+                    document.getElementById("bigcrunch").click()
+                }
+            } else {
+                if (!player.break || player.currentChallenge != "" || galaxyModeCrunch()) {
                     autoS = false;
                     document.getElementById("bigcrunch").click()
                 }
@@ -6711,8 +6745,8 @@ window.onload = function() {
     }, 1000)
 }
 
-window.addEventListener('keydown', function(event) {
-    if (!player.options.hotkeys) return false
+window.addEventListener('keydown', function (event) {
+    if (!player.options.hotkeys || ['input', 'textarea'].includes(event.target.nodeName.toLowerCase())) return false
     switch (event.keyCode) {
         case 65: // A
             toggleAutoBuyers();
@@ -6776,7 +6810,7 @@ window.addEventListener('keydown', function(event) {
   }, false);
 
   window.addEventListener('keyup', function(event) {
-    if (!player.options.hotkeys) return false
+    if (!player.options.hotkeys || ['input', 'textarea'].includes(event.target.nodeName.toLowerCase())) return false
     switch (event.keyCode) {
         case 67: // C
             document.getElementById("bigcrunch").onclick()
