@@ -364,8 +364,8 @@
     transition-duration: 0.2s;
     cursor: pointer;
     position: absolute;
-    left: 80%;
-    width: 200px;
+    left: 78%;
+    width: 215px;
     height: 70px;
     font-family: Typewriter;
     font-size: 11px
@@ -420,8 +420,8 @@
     transition-duration: 0.2s;
     cursor: pointer;
     position: absolute;
-    right: 80%;
-    width: 200px;
+    right: 78%;
+    width: 215px;
     height: 60px;
     font-family: Typewriter;
     color: black;
@@ -444,8 +444,8 @@
     transition-duration: 0.2s;
     cursor: pointer;
     position: absolute;
-    right: 80%;
-    width: 200px;
+    right: 78%;
+    width: 215px;
     height: 60px;
     cursor: pointer;
 
@@ -463,20 +463,19 @@
 }
 
 .eternitybtn {
-    font-weight: bold;
     border-radius: 4px;
     transition-duration: 0.2s;
     cursor: pointer;
     position: absolute;
-    right: 80%;
-    width: 200px;
+    right: 78%;
+    width: 215px;
     height: 70px;
     font-family: Typewriter;
     color: #b341e0;
     background: black;
     border: 2px solid #b341e0;
     cursor: pointer;
-    font-size: 12px;
+    font-size: 11px;
 }
 
 
