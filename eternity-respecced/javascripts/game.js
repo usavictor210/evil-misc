@@ -972,6 +972,7 @@ function loadAutoBuyerSettings() {
     document.getElementById("prioritySac").value = player.autoSacrifice.priority
     document.getElementById("bulkgalaxy").value = player.autobuyers[10].bulk
     document.getElementById("maxReplicantiCrunchSwitch").checked = player.autobuyers[11].requireMaxReplicanti;
+    document.getElementById("requireIPPeak").checked = player.autobuyers[11].requireIPPeak;
     document.getElementById("priority13").value = player.eternityBuyer.limit
 
 }
@@ -1892,8 +1893,8 @@ function hideDims () {
 
 
 
-function softReset(bulk) {
-    if (bulk < 1) bulk = 1
+function softReset(bulk, reallyZero) {
+    if (bulk < 1 && !reallyZero) bulk = 1
     player.resets+=bulk;
     if (bulk >= 750) giveAchievement("Costco sells Dimboosts now");
     player = {
@@ -2041,7 +2042,7 @@ function softReset(bulk) {
     if (player.achievements.includes("r36")) player.tickspeed = player.tickspeed.times(0.98);
     if (player.achievements.includes("r45")) player.tickspeed = player.tickspeed.times(0.98);
     if (player.achievements.includes("r66")) player.tickspeed = player.tickspeed.times(0.98);
-    if (player.achievements.includes("r83")) player.tickspeed = player.tickspeed.times(Decimal.pow(0.95,player.galaxies));
+    if (player.achievements.includes("r83")) player.tickspeed = player.tickspeed.times(Decimal.pow(0.95, player.galaxies));
 
 
 
@@ -2099,13 +2100,13 @@ function getGalaxyMultiplier () {
   return galaxy;
 }
 
-function getReplicantiGalaxyPower () {
-  return Math.log2(player.replicanti.limit.log(2)) / 10;
+function getReplicantiGalaxyPower (limit) {
+  return Math.log2(limit.log(2)) / 10;
 }
 
 function getTickSpeedMultiplier() {
     if (player.currentChallenge == "postc3") return 1;
-    let totalGalaxies = (player.galaxies + player.replicanti.galaxies * getReplicantiGalaxyPower()) * getGalaxyMultiplier()
+    let totalGalaxies = (player.galaxies + player.replicanti.galaxies * getReplicantiGalaxyPower(player.replicanti.limit)) * getGalaxyMultiplier()
     let baseMultiplier = 0.9;
     if (totalGalaxies == 0) baseMultiplier = 0.89;
     if (player.currentChallenge == "challenge6" || player.currentChallenge == "postc1") baseMultiplier = 0.93;
@@ -2330,13 +2331,13 @@ function setReplicantiNewLimit () {
   let newLimit = new Decimal(document.getElementById('replLimit').value);
   if (newLimit.gte(2)) {
     player.replicanti.newLimit = new Decimal(document.getElementById('replLimit').value);
-    document.getElementById('galStrength').value = getReplicantiGalaxyPower().toFixed(3);
+    document.getElementById('galStrength').value = getReplicantiGalaxyPower(player.replicanti.newLimit).toFixed(3);
   }
 }
 
 function updateReplicantiGalaxyPowerControl () {
   document.getElementById('replLimit').value = player.replicanti.newLimit.toExponential(3);
-  document.getElementById('galStrength').value = getReplicantiGalaxyPower().toFixed(3);
+  document.getElementById('galStrength').value = getReplicantiGalaxyPower(player.replicanti.newLimit).toFixed(3);
 }
 
 function giveAchievement(name) {
@@ -4233,6 +4234,7 @@ function updatePriorities() {
     }
     player.autobuyers[11].priority = infvalue
     player.autobuyers[11].requireMaxReplicanti = document.getElementById('maxReplicantiCrunchSwitch').checked;
+    player.autobuyers[11].requireIPPeak = document.getElementById('requireIPPeak').checked;
     var bulk = Math.max(parseFloat(document.getElementById("bulkDimboost").value), 0.05)
     if (isNaN(bulk)) bulk = 1
     player.autobuyers[9].bulk = bulk
@@ -4642,7 +4644,8 @@ document.getElementById("bigcrunch").onclick = function () {
         player.tickspeed = player.tickspeed.times(Decimal.pow(getTickSpeedMultiplier(), player.totalTickGained))
         updateTickSpeed();
         if (player.challenges.length == 20) giveAchievement("Anti-antichallenged");
-        IPminpeak = new Decimal(0)
+        IPminpeak = new Decimal(0);
+        IPpeak = new Decimal(0);
         updateInfCosts()
 
         if (player.eternities > 10) {
@@ -4928,7 +4931,8 @@ function eternity() {
         updateLastTenEternities()
         var infchalls = Array.from(document.getElementsByClassName('infchallengediv'))
         for (var i = 0; i< infchalls.length; i++) infchalls[i].style.display = "none"
-        IPminpeak = new Decimal(0);
+        IPminpeak = new Decimal(0)
+        IPpeak = new Decimal(0);
         EPminpeak = new Decimal(0);
         updateMilestones()
         resetTimeDimensions()
@@ -5099,7 +5103,8 @@ function startChallenge(name, target) {
     if (player.replicanti.unl) player.replicanti.amount = new Decimal(1);
     player.replicanti.galaxies = 0
 
-    IPminpeak = new Decimal(0)
+    IPminpeak = new Decimal(0);
+    IPpeak = new Decimal(0);
     if (player.currentChallenge.includes("post")) player.break = true
     if (player.achievements.includes("r36")) player.tickspeed = player.tickspeed.times(0.98);
     if (player.achievements.includes("r45")) player.tickspeed = player.tickspeed.times(0.98);
@@ -5412,6 +5417,7 @@ setInterval(function() {
 
 var postC2Count = 0;
 var IPminpeak = new Decimal(0);
+var IPpeak = new Decimal(0);
 var EPminpeak = new Decimal(0);
 var replicantiTicks = 0
 
@@ -5581,11 +5587,18 @@ function startInterval() {
         }
 
 
-        if (player.break) document.getElementById("iplimit").style.display = "inline"
-        else document.getElementById("iplimit").style.display = "none"
+        if (player.break) {
+          document.getElementById("iplimit").style.display = "inline";
+          document.getElementById("IPPeakDiv").style.display = "inline";
+        } else {
+          document.getElementById("iplimit").style.display = "none";
+          document.getElementById("IPPeakDiv").style.display = "none";
+        }
 
         var currentIPmin = gainedInfinityPoints().dividedBy(player.thisInfinityTime/600)
-        if (currentIPmin.gt(IPminpeak)) IPminpeak = currentIPmin
+        if (currentIPmin.gt(IPminpeak)) IPminpeak = currentIPmin;
+        var currentIP = gainedInfinityPoints();
+        if (currentIP.gt(IPpeak)) IPpeak = currentIP;
         document.getElementById("postInfinityButton").innerHTML = "<b>Big Crunch for "+shortenDimensions(gainedInfinityPoints())+" Infinity Points</b><br>"+shortenDimensions(currentIPmin) + " IP/min"+
                                                                     "<br>Peaked at "+shortenDimensions(IPminpeak)+" IP/min";
 
@@ -5647,7 +5660,11 @@ function startInterval() {
         if (gainedEternityPoints().gte(1e3)) {
           eterButtonStart = '';
         }
-        document.getElementById("eternitybtn").innerHTML = eterButtonStart + "<b>Gain " + shortenDimensions(gainedEternityPoints()) + " Eternity points.</b><br>" + shortenDimensions(currentEPmin) + " EP/min<br>Peaked at " + shortenDimensions(EPminpeak) + " EP/min";
+        let eterButtonEnd = "<br>" + shortenDimensions(currentEPmin) + " EP/min<br>Peaked at " + shortenDimensions(EPminpeak) + " EP/min";
+        if (player.eternities === 0) {
+          eterButtonEnd = '';
+        }
+        document.getElementById("eternitybtn").innerHTML = eterButtonStart + "<b>Gain " + shortenDimensions(gainedEternityPoints()) + " Eternity points.</b>" + eterButtonEnd;
 
         updateMoney();
         updateCoinPerSec();
@@ -6008,7 +6025,7 @@ function maxBuyDimBoosts() {
         r++;
     }
     if (r >= 750) giveAchievement("Costco sells dimboosts now")
-    softReset(0)
+    softReset(0, true);
 }
 
 var timer = 0
@@ -6018,7 +6035,7 @@ function autoBuyerTick() {
 
     if (player.autobuyers[11]%1 !== 0) {
     if (player.autobuyers[11].ticks*100 >= player.autobuyers[11].interval && player.money.gte(Number.MAX_VALUE)) {
-        if (player.autobuyers[11].isOn) {
+        if (player.autobuyers[11].isOn && (!player.autobuyers[11].requireIPPeak || gainedInfinityPoints().gte(IPpeak))) {
             if (player.autoCrunchMode === "amount") {
                 if (!player.break || player.currentChallenge != "" || player.autobuyers[11].priority.lt(gainedInfinityPoints())) {
                     autoS = false;
