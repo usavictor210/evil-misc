@@ -114,9 +114,11 @@
                       </td>
                   </tr>
                 </table>
-                <p id="timetheorems" style="margin: 0 auto;">You have 0 Time Theorems.</p>
+                <p id="timetheorems" style="margin: 0 auto;">You have 0 unspent Time Theorems.</p>
+                <p id="totaltimetheorems" style="margin: 0 auto;">You have 0 total Time Theorems.</p>
+                <p id="nextstudy" style="margin: 0 auto;"></p>
                 <table class="table" style="margin: 0 auto;">
-                    <tr>
+                    <tr id="tsrow1">
                         <td>
                             <button id="ts1" class="eternityupbtn" onclick="buyTimeStudy(1)">Sacrifice is stronger (10% first time, total effect logarithmic in times bought)<br/>Bought: <span id="ts1bought">x</span><br/>Cost: <span id="ts1cost">x</span> TT</button>
                         </td>
@@ -124,12 +126,24 @@
                             <button id="ts2" class="eternityupbtn" onclick="buyTimeStudy(2)">You get 10% more tickspeed upgrades from time dimensions (not considering multiplier increase)<br/>Bought: <span id="ts2bought">x</span><br/>Cost: <span id="ts2cost">x</span> TT</button>
                         </td>
                     </tr>
-                    <tr>
+                </table>
+                <table class="table" style="margin: 0 auto;">
+                    <tr id="tsrow2">
                         <td>
                             <button id="ts3" class="eternityupbtn" onclick="buyTimeStudy(3)">Replicanti multiplier to ID is 25% stronger<br/>Bought: <span id="ts3bought">x</span><br/>Cost: <span id="ts3cost">x</span> TT</button>
                         </td>
                         <td>
                             <button id="ts4" class="eternityupbtn" onclick="buyTimeStudy(4)">Dimension boost multiplier is incremented<br/>Bought: <span id="ts4bought">x</span><br/>Cost: <span id="ts4cost">x</span> TT</button>
+                        </td>
+                    </tr>
+                </table>
+                <table class="table" style="margin: 0 auto;">
+                    <tr id="tsrow3">
+                        <td>
+                            <button id="ts5" class="eternityupbtn" onclick="buyTimeStudy(5)">Decreasing multiplier to IP (1e5 / seconds in infinity)<br/>Bought: <span id="ts5bought">x</span><br/>Cost: <span id="ts5cost">x</span> TT</button>
+                        </td>
+                        <td>
+                            <button id="ts6" class="eternityupbtn" onclick="buyTimeStudy(6)">Increasing multiplier to IP (seconds in infinity)<br/>Bought: <span id="ts6bought">x</span><br/>Cost: <span id="ts6cost">x</span> TT</button>
                         </td>
                     </tr>
                 </table>
@@ -159,6 +173,9 @@
                         </td>
                         <td>
                             <button id="eter2" class="eternityupbtn" onclick="buyEternityUpgrade(2, 10)">"Infinity Dimension multiplier based on eternities (x^log4(2x))<br>Currently: x<br>Cost: 10 EP</button>
+                        </td>
+                        <td>
+                            <button id="eter3" class="eternityupbtn" onclick="buyEternityUpgrade(3, 1e4)">"Infinity Dimension multiplier based on timeshards (x^log4(2x))<br>Currently: x<br>Cost: 10 EP</button>
                         </td>
                     </tr>
                 </table>

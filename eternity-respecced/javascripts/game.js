@@ -9,7 +9,8 @@ var initTimestudy = function () {
       amcost: new Decimal("1e20000"),
       ipcost: new Decimal(1),
       epcost: new Decimal(1),
-      studies: [null, 0, 0, 0, 0]
+      studies: [null, 0, 0, 0, 0, 0, 0],
+      studyGroupsUnlocked: 0
   }
 }
 
@@ -698,6 +699,14 @@ function onLoad() {
     }
     if (player.timestudy === undefined || player.timestudy.studies[0] !== null) {
         player.timestudy = initTimestudy();
+    }
+
+    while (player.timestudy.studies.length < 1 + numTimeStudies) {
+        player.timestudy.studies.push(0);
+    }
+
+    if (player.timestudy.studyGroupsUnlocked === undefined) {
+        player.timestudy.studyGroupsUnlocked = 0;
     }
 
     if (player.eternities == 0) {
@@ -1417,8 +1426,9 @@ function updateDimensions() {
     document.getElementById("offlineProd").innerHTML = "Generates "+player.offlineProd+"% > "+Math.max(Math.max(5, player.offlineProd + 5), Math.min(50, player.offlineProd + 5))+"% of your best IP/min from last 10 infinities, works offline<br>Currently: "+shortenMoney(bestRunIppm.times(player.offlineProd/100)) +"IP/min<br> Cost: "+shortenCosts(player.offlineProdCost)+" IP"
     if (player.offlineProd == 50) document.getElementById("offlineProd").innerHTML = "Generates "+player.offlineProd+"% of your best IP/min from last 10 infinities, works offline<br>Currently: "+shortenMoney(bestRunIppm.times(player.offlineProd/100)) +" IP/min"
 
-    document.getElementById("eter1").innerHTML = "Infinity Dimensions multiplier based on unspent EP (x+1)<br>Currently: "+shortenMoney(player.eternityPoints.plus(1))+"x<br>Cost: 5 EP";
+    document.getElementById("eter1").innerHTML = "Infinity Dimension multiplier based on unspent EP (x+1)<br>Currently: "+shortenMoney(player.eternityPoints.plus(1))+"x<br>Cost: 5 EP";
     document.getElementById("eter2").innerHTML = "Infinity Dimension multiplier based on eternities (x^log4(2x))<br>Currently: "+shortenMoney(Decimal.pow(player.eternities, Math.log(player.eternities*2)/Math.log(4)))+"x<br>Cost: 10 EP";
+    document.getElementById("eter3").innerHTML = "Infinity Dimension multiplier based on timeshards (x/"+formatValue(player.options.notation, 1e12, 0, 0)+"+1)<br>Currently: "+shortenMoney(player.timeShards.div(1e12).plus(1))+"x<br>Cost: "+shortenCosts(1e4)+" EP"
 }
 
 function updateCosts() {
@@ -1574,6 +1584,10 @@ function DimensionPower(tier) {
 
     if (player.eternityUpgrades.includes(2)) {
       mult = mult.times(Decimal.pow(player.eternities, Math.log(player.eternities*2+1)/Math.log(4)));
+    }
+
+    if (player.eternityUpgrades.includes(3)) {
+      mult = mult.times(player.timeShards.div(1e12).plus(1));
     }
 
     return mult;
@@ -1771,11 +1785,28 @@ function resetTimeDimensions() {
 
 }
 
+let numTimeStudies = 6;
+
+function studyHasBeenUnlocked (num) {
+  return rowHasBeenUnlocked(Math.floor((num + 1) / 2));
+}
+
+function rowHasBeenUnlocked (num) {
+  return studyRowLevels[num] <= player.timestudy.studyGroupsUnlocked;
+}
 
 function updateTimeStudyButtons () {
-  for (let i = 1; i <= 4; i++) {
+  for (let i = 1; i <= numTimeStudies / 2; i++) {
+    let row = document.getElementById('tsrow' + i);
+    if (rowHasBeenUnlocked(i)) {
+      row.style.display = 'inline';
+    } else {
+      row.style.display = 'none';
+    }
+  }
+  for (let i = 1; i <= numTimeStudies; i++) {
     let t = document.getElementById('ts' + i);
-    if (player.timestudy.theorem >= player.timestudy.studies[i] + 1) {
+    if (player.timestudy.theorem >= player.timestudy.studies[i] + 1 && studyHasBeenUnlocked(i)) {
       t.className = "eternityupbtn"
     } else {
       t.className = "eternityupbtnlocked"
@@ -1819,6 +1850,14 @@ function buyWithEP() {
     }
 }
 
+function getTotalTT () {
+  return Math.round(player.timestudy.amcost.log(10) / 20000 + player.timestudy.ipcost.log(10) / 100 + player.timestudy.epcost.log(2) - 1);
+}
+
+let nextStudiesAt = [60];
+
+let studyRowLevels = {1: 0, 2: 0, 3: 1}
+
 function updateTheoremButtons() {
     document.getElementById("theoremam").className = player.money.gte(player.timestudy.amcost) ? "timetheorembtn" : "timetheorembtnlocked"
     document.getElementById("theoremip").className = player.infinityPoints.gte(player.timestudy.ipcost) ? "timetheorembtn" : "timetheorembtnlocked"
@@ -1826,11 +1865,21 @@ function updateTheoremButtons() {
     document.getElementById("theoremep").innerHTML = "Buy Time Theorems <br>Cost: "+shortenCosts(player.timestudy.epcost)+" EP"
     document.getElementById("theoremip").innerHTML = "Buy Time Theorems <br>Cost: "+shortenCosts(player.timestudy.ipcost)+" IP"
     document.getElementById("theoremam").innerHTML = "Buy Time Theorems <br>Cost: "+shortenCosts(player.timestudy.amcost)
-    document.getElementById("timetheorems").innerHTML = "You have <span style='display:inline' class=\"TheoremAmount\">"+player.timestudy.theorem+"</span> Time "+ (player.timestudy.theorem == 1 ? "Theorem." : "Theorems.")
+    document.getElementById("timetheorems").innerHTML = "You have <span style='display:inline' class=\"TheoremAmount\">"+player.timestudy.theorem+"</span> unspent Time "+ (player.timestudy.theorem == 1 ? "Theorem." : "Theorems.")
+    document.getElementById("totaltimetheorems").innerHTML = "You have <span style='display:inline' class=\"TheoremAmount\">"+getTotalTT()+"</span> total Time "+ (getTotalTT() == 1 ? "Theorem." : "Theorems.")
+    if (nextStudiesAt[player.timestudy.studyGroupsUnlocked] === undefined) {
+        document.getElementById("nextstudy").innerHTML = "You've unlocked all the time studies.";
+    }
+    else {
+        document.getElementById("nextstudy").innerHTML = "Next time studies unlock at " + nextStudiesAt[player.timestudy.studyGroupsUnlocked] + " total Time Theorems.";
+        if (getTotalTT() >= nextStudiesAt[player.timestudy.studyGroupsUnlocked]) {
+            player.timestudy.studyGroupsUnlocked += 1
+        }
+    }
 }
 
 function buyTimeStudy(num) {
-  if (player.timestudy.theorem >= 1 + player.timestudy.studies[num]) {
+  if (player.timestudy.theorem >= 1 + player.timestudy.studies[num] && studyHasBeenUnlocked(num)) {
       player.timestudy.studies[num] += 1;
       player.timestudy.theorem -= player.timestudy.studies[num];
       updateTheoremButtons()
@@ -3007,6 +3056,7 @@ document.getElementById("infiMult").onclick = function() {
 function updateEternityUpgrades() {
     document.getElementById("eter1").className = (player.eternityUpgrades.includes(1)) ? "eternityupbtnbought" : (player.eternityPoints.gte(5)) ? "eternityupbtn" : "eternityupbtnlocked";
     document.getElementById("eter2").className = (player.eternityUpgrades.includes(2)) ? "eternityupbtnbought" : (player.eternityPoints.gte(10)) ? "eternityupbtn" : "eternityupbtnlocked";
+    document.getElementById("eter3").className = (player.eternityUpgrades.includes(3)) ? "eternityupbtnbought" : (player.eternityPoints.gte(1e4)) ? "eternityupbtn" : "eternityupbtnlocked";
 }
 
 
@@ -3834,8 +3884,14 @@ function breakInfinity() {
 }
 
 function gainedInfinityPoints() {
-    var ret = Decimal.floor(Decimal.pow(10, player.money.e/308 -0.75).times(player.infMult.times(kongIPMult)))
-    if (player.achievements.includes("r103")) ret = Decimal.floor(Decimal.pow(10, player.money.e/307.8 -0.75).times(player.infMult.times(kongIPMult)));
+    var ret = Decimal.floor(Decimal.pow(10, player.money.e / 308 - 0.75).times(player.infMult.times(kongIPMult)))
+    if (player.achievements.includes("r103")) {
+      ret = Decimal.floor(Decimal.pow(10, player.money.e / 307.8 - 0.75).times(player.infMult.times(kongIPMult)));
+    }
+    // We want seconds in infinity, not in eternity.
+    let secondsInInfinity = Math.max(player.thisInfinityTime / 10, 1);
+    ret = ret.times(Decimal.pow(Math.max(1e5 / secondsInInfinity, 1), player.timestudy.studies[5]));
+    ret = ret.times(Decimal.pow(secondsInInfinity, player.timestudy.studies[6]));
     return ret
 }
 
@@ -5330,6 +5386,7 @@ setInterval(function() {
             updateChallenges()
         }
     }
+
     let temp = 1
     for (var i=0; i < player.challenges.length; i++) {
         if (player.challenges[i].includes("post")) {
@@ -6182,7 +6239,9 @@ var newsArray = ["You just made your 1,000,000,000,000,000 antimatter. This one 
 "No, mom, I can't pause this game.", "Scientific notation has entered the battlefield.", "Make the Universe Great Again! -Tronald Dump", "#dank-maymays",
 "A new religion has been created, and it's spreading like wildfire. The believers of this religion worship the Heavenly Pelle, the goddess of antimatter. They also believe that 10^308 is infinite.",
 "Someone has just touched a blob, and blown up. Was the blob antimatter, or was the guy made of Explodium?", "Antimatter people seem to be even more afraid of 13 then we are. They destroyed entire galaxies just to remove 13 from their percents.",
-"If you are not playing on Kongregate or ivark.github.io, the site is bootleg.", "Rate 5 on Kongregate so more people can experience this 5 star Rating", "BOO!", "You ate for too long. -hevipelle", "I hate myself. -Boo-chan",
+"You are playing a mod of AD with slightly different gameplay, especially lategame. The original AD has a news message \"If you are not playing on Kongregate or ivark.github.io, the site is bootleg.\" And I guess since Hevipelle hasn't approved this mod the news message is sort of correct. But Hevipelle will betray you so who cares anyway?",
+"If you are not playing on games.celestai.qx or examples.memetics.nonanomalous.scp, please report the containment breach.",
+"Rate 5 on Kongregate so more people can experience this 5 star Rating", "BOO!", "You ate for too long. -hevipelle", "I hate myself. -Boo-chan",
 "Gee golly -Xandawesome", "Need more quotes! -hevipelle", "Above us, there is nothing above, But the stars, above.", "If black lives matter, do white lives antimatter?", "Somebody wasn't nice, he got an antimatter-storm.",
 "You are living, you occupy space, you have a mass, you matter... unless you antimatter.", "I clicked too fast... my PC is now dematerialised.",
 "If an alien lands on your front lawn and extends an appendage as a gesture of greeting, before you get friendly, toss it an eightball. If the appendage explodes, then the alien was probably made of antimatter. If not, then you can proceed to take it to your leader. -Neil deGrasse Tyson",
