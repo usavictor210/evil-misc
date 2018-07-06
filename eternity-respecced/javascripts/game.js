@@ -1734,7 +1734,9 @@ function getTimeDimensionProduction(tier) {
     // effect of tickspeed, which is not part of power
     // (see, for example, normal dimensions)
     if (player.achievements.includes('r105')) {
-      ret = ret.times(player.tickspeed.pow(-1e-5));
+      // changed code here to be more analogous to code for infinity dimensions
+      // being affected by tickspeed
+      ret = ret.dividedBy(player.tickspeed.dividedBy(1000).pow(1e-5));
     }
     return ret
 }
