@@ -6327,6 +6327,26 @@ var conditionalNewsArray = ["Our universe is falling apart. We are all evacuatin
 "Studies show a massive problem with the time-space continuum. In other words, a large amount of antimatter has dissapeared from the cosmos",
 "Should we call antimatter Matter now? There seems to be more of it."]
 
+var cheatCodeNewsArray = [
+  "0: The numbered messages about the sixteen different types of points can give a cheat code when considered correctly.",
+  "1: Your alternative points are your exponential points or your logarithmic points, whichever is greater.",
+  "2: Your binary points are 2^bits rounded to the nearest power of 10. The formula for bits is 2^8 - greatest number of dragons you ever had - 2 * log10(overflow points)",
+  "3: Your cheat-code points are 10 to the power of the autobuyer setting needed for 'Nice'.",
+  "4: You get one draconic point per dragon per second. You had 100 dragons for about 300 million years, but no others.",
+  "5: Your exponential points are 10 to the power of the fourth root (rounded up) of 10 times your logarithmic points.",
+  "6: Your fractional points are one billionth of the type of points you have the most of.",
+  "7: You have one ghostly point per unit of hypervolume in a hypercube with side length 100 and dimension ERROR",
+  "8: Your hyper points are the geometric mean of the square of your logarithmic points and one-tenth of the cube root of your exponential points.",
+  "9: Your imaginary points are tied for the type of point you have second least of.",
+  "10: Your jump points are roughly double the difference beween 2^99 and 3^61.",
+  "11: Your k points are supposed to be 1k in letter notation, but for some reason you have (and have always had) 1000 times more than that.",
+  "12: Your logarithmic points are the sixth power of one-third of the base-10 logarithm of your numerical points.",
+  "13: Your meta points are the initial cost in antimatter of the 60th 6th dimension you buy.",
+  "14: Your number of numerical points is the same as your number of another type of point, is the square of your number of another type of point, and is the square root of your number of another type of point.",
+  "15: Your overflow points are your partial points times 1000.",
+  "16: You get one thousandth of a partial point per k point per second. You have been getting partial points in this way for about 30 years, and before that you had no partial points."
+]
+
 /*var initpos = c.width;
 ctx.textBaseline = 'top';
 var newsTextValue = Decimal.round(Decimal.random() * (newsArray.length - 1))
@@ -6363,8 +6383,15 @@ var scrollTimeouts = [];
 
 function scrollNextMessage() {
   //select a message at random
-  let idx = Math.floor(Math.random() * newsArray.length)
-  let msg = {msg: newsArray[idx], index: idx};
+  let idx;
+  let msg;
+  if (Math.random() < .01) {
+    idx = Math.floor(Math.random() * cheatCodeNewsArray.length);
+    msg = {msg: cheatCodeNewsArray[idx], index: idx};
+  } else {
+    idx = Math.floor(Math.random() * newsArray.length)
+    msg = {msg: newsArray[idx], index: idx};
+  }
 
   scrollTimeouts.forEach(function(v) {clearTimeout(v);});
   scrollTimeouts = [];
