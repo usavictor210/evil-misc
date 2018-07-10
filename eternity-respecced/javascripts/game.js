@@ -229,9 +229,9 @@ var player = {
         hotkeys: true,
         theme: undefined,
         eternityconfirm: true,
-        commas: true
+        commas: true,
+        cheat: false
     }
-
 };
 
 /*var c = document.getElementById("game");
@@ -714,6 +714,12 @@ function onLoad() {
         document.getElementById("eternitystorebtn").style.display = "none";
     }
 
+    if (player.options.cheat) {
+        document.getElementById("cheatbtn").style.display = "inline-block";
+    } else {
+        document.getElementById("cheatbtn").style.display = "none";
+    }
+
     if (player.eternityUpgrades === undefined) player.eternityUpgrades = []
 
     if (player.infDimBuyers === undefined) player.infDimBuyers = [false, false, false, false, false, false, false, false]
@@ -933,7 +939,10 @@ function transformSaveToDecimal() {
         player.lastTenRuns[i][1] = new Decimal(player.lastTenRuns[i][1])
         player.lastTenEternities[i][1] = new Decimal(player.lastTenEternities[i][1])
     }
-    player.lastTenRuns = [[parseFloat(player.lastTenRuns[0][0]), player.lastTenRuns[0][1]], [parseFloat(player.lastTenRuns[1][0]), player.lastTenRuns[1][1]], [parseFloat(player.lastTenRuns[2][0]), player.lastTenRuns[2][1]], [parseFloat(player.lastTenRuns[3][0]), player.lastTenRuns[3][1]], [parseFloat(player.lastTenRuns[4][0]), player.lastTenRuns[4][1]], [parseFloat(player.lastTenRuns[5][0]), player.lastTenRuns[5][1]], [parseFloat(player.lastTenRuns[6][0]), player.lastTenRuns[6][1]], [parseFloat(player.lastTenRuns[7][0]), player.lastTenRuns[7][1]], [parseFloat(player.lastTenRuns[8][0]), player.lastTenRuns[8][1]], [parseFloat(player.lastTenRuns[9][0]), player.lastTenRuns[9][1]]]
+    player.lastTenRuns = [[parseFloat(player.lastTenRuns[0][0]), player.lastTenRuns[0][1]], [parseFloat(player.lastTenRuns[1][0]), player.lastTenRuns[1][1]], [parseFloat(player.lastTenRuns[2][0]), player.lastTenRuns[2][1]],
+    [parseFloat(player.lastTenRuns[3][0]), player.lastTenRuns[3][1]], [parseFloat(player.lastTenRuns[4][0]), player.lastTenRuns[4][1]], [parseFloat(player.lastTenRuns[5][0]), player.lastTenRuns[5][1]],
+    [parseFloat(player.lastTenRuns[6][0]), player.lastTenRuns[6][1]], [parseFloat(player.lastTenRuns[7][0]), player.lastTenRuns[7][1]], [parseFloat(player.lastTenRuns[8][0]), player.lastTenRuns[8][1]],
+    [parseFloat(player.lastTenRuns[9][0]), player.lastTenRuns[9][1]]]
     player.replicanti.chanceCost = new Decimal(player.replicanti.chanceCost)
     player.replicanti.intervalCost = new Decimal(player.replicanti.intervalCost)
     player.replicanti.galCost = new Decimal(player.replicanti.galCost)
@@ -3243,16 +3252,19 @@ document.getElementById("offlineProd").onclick = function() {
     }
 }
 
-let getReplicantiIntervalBonus = function () {
+let getReplicantiIntervalBonus = function (amount) {
+  if (amount === undefined) {
+    amount = player.replicanti.amount;
+  }
   if (player.achievements.includes('r107')) {
-    return Math.pow(Math.max(player.replicanti.amount.log(2) / 1024, 1), .25);
+    return Math.pow(Math.max(amount.log(2) / 1024, 1), .25);
   } else {
     return 1;
   }
 }
 
-let getReplicantiInterval = function () {
-  return player.replicanti.interval / getReplicantiIntervalBonus();
+let getReplicantiInterval = function (amount) {
+  return player.replicanti.interval / getReplicantiIntervalBonus(amount);
 }
 
 let getNewReplicantiInterval = function () {
@@ -3828,10 +3840,16 @@ function verify_save(obj) {
 
 document.getElementById("importbtn").onclick = function () {
     var save_data = prompt("Input your save.");
-    if (save_data.toUpperCase() == "CHRISTMAS") {
+    // Those secret themes aren't secrets. The cheat code, on the other hand, is a secret.
+    if (sha512_256(save_data.replace(/\s/g, '').toUpperCase()) === 'a0c89703576f66e78cd3f48f8442aad424cd3b1f01d0a6281cda21628697a13b') {
+        player.options.cheat = !player.options.cheat;
+        alert('Switched cheat mode to ' + player.options.cheat);
+        save_game();
+        load_game();
+    } else if (save_data.toUpperCase() === "CHRISTMAS") {
         player.options.theme = "Christmas";
         setTheme(player.options.theme);
-    } else if (save_data.toUpperCase() == "FINLAND") {
+    } else if (save_data.toUpperCase() === "FINLAND") {
         player.options.theme = "Finnish";
         setTheme(player.options.theme);
     } else {
@@ -4746,20 +4764,29 @@ function respecToggle() {
     }
 }
 
-function eternity() {
-    if (player.infinityPoints.gte(Number.MAX_VALUE) && (!player.options.eternityconfirm || confirm("Eternity will reset everything except achievements and challenge records. You will also gain an Eternity point and unlock various upgrades."))) {
-        if (player.thisEternity<player.bestEternity) {
-            player.bestEternity = player.thisEternity
-            if (player.bestEternity < 300) giveAchievement("That wasn't an eternity");
+function eternity(force) {
+    if ((player.infinityPoints.gte(Number.MAX_VALUE) &&
+    (!player.options.eternityconfirm ||
+      confirm("Eternity will reset everything except achievements " +
+      "and challenge records. You will also gain an Eternity point " +
+      "and unlock various upgrades."))) || force === true) {
+        if (!force) {
+          if (player.thisEternity < player.bestEternity) {
+              player.bestEternity = player.thisEternity
+              if (player.bestEternity < 300) giveAchievement("That wasn't an eternity");
+          }
+          // This .toFixed(0) is, it seems, just what is done in display.
+          if (player.replicanti.amount.toFixed(0) === '9') giveAchievement("We could afford 9");
+          player.eternityPoints = player.eternityPoints.plus(gainedEternityPoints())
+          addEternityTime(player.thisEternity, gainedEternityPoints())
         }
-        // This .toFixed(0) is, it seems, just what is done in display.
-        if (player.replicanti.amount.toFixed(0) === '9') giveAchievement("We could afford 9");
+        if (force) {
+          // to compensate
+          player.eternities -= 1;
+        }
         temp = []
-        player.eternityPoints = player.eternityPoints.plus(gainedEternityPoints())
-        addEternityTime(player.thisEternity, gainedEternityPoints())
 
         for (var i=0; i<player.challenges.length; i++) {
-
             if (!player.challenges[i].includes("post") && player.eternities > 1) temp.push(player.challenges[i])
         }
         player.challenges = temp
@@ -5407,7 +5434,9 @@ setInterval(function() {
     document.getElementById("eternitybtn").style.display = player.infinityPoints.gte(Number.MAX_VALUE) ? "inline-block" : "none"
 
 
-    if (player.eternities !== 0)document.getElementById("eternitystorebtn").style.display = "inline-block"
+    if (player.eternities !== 0) {
+      document.getElementById("eternitystorebtn").style.display = "inline-block"
+    }
     for (var i=1; i <=8; i++) {
         document.getElementById("postc"+i+"goal").innerHTML = "Goal: "+shortenCosts(goals[i-1])
     }
@@ -5480,21 +5509,24 @@ var IPpeak = new Decimal(0);
 var EPminpeak = new Decimal(0);
 var replicantiTicks = 0
 
-function getReplicantiETA () {
-  let interval = getReplicantiInterval();
-  let growthTime = getReplicantiInterval() / Math.log2(1 + player.replicanti.chance) / 100;
+function getReplicantiETA (amount) {
+  if (amount === undefined) {
+    amount = player.replicanti.amount;
+  }
+  let interval = getReplicantiInterval(amount);
+  let growthTime = getReplicantiInterval(amount) / Math.log2(1 + player.replicanti.chance) / 100;
   if (!player.achievements.includes('r107')) {
     // replicanti aren't quicker yet
-    return (player.replicanti.limit.log(2) - player.replicanti.amount.log(2)) * growthTime;
+    return (player.replicanti.limit.log(2) - amount.log(2)) * growthTime;
   }
   let preInf;
-  if (player.replicanti.amount.lt(Number.MAX_VALUE)) {
-    preInf = (Math.log2(Number.MAX_VALUE) - player.replicanti.amount.log(2)) * growthTime;
+  if (amount.lt(Number.MAX_VALUE)) {
+    preInf = (Math.log2(Number.MAX_VALUE) - amount.log(2)) * growthTime;
   } else {
     preInf = 0;
   }
   // post infinity we go like x^(4/3) up to constant, so overall it takes ((4 / 3) * (goal / current)^(3 / 4) - 1) * growth / current.
-  let current = player.replicanti.amount.max(new Decimal(Number.MAX_VALUE));
+  let current = amount.max(new Decimal(Number.MAX_VALUE));
   let postInf;
   if (player.replicanti.limit.gt(current)) {
     postInf = ((4 / 3) * (Math.pow(player.replicanti.limit.log(2) / current.log(2), 3 / 4) - 1)) * growthTime * current.log(2);
@@ -6519,11 +6551,18 @@ function init() {
         showTab('infinity');
     };
     document.getElementById("shopbtn").onclick = function () {
+      if (confirm("Just in case you're only buying things to progress in the game: there's a free cheat tab. " +
+      "I expect someone is willing to freely give you the code to access it. " +
+      "Select OK if you want to continue to the shop (which shouldn't be appearing in any case because this version isn't on kongregate).")) {
         showTab('shop')
         updateKongPurchases()
+      }
     }
     document.getElementById("eternitystorebtn").onclick = function () {
         showTab('eternitystore')
+    }
+    document.getElementById("cheatbtn").onclick = function () {
+        showTab('cheat')
     }
     //show one tab during init or they'll all start hidden
     showTab('dimensions')
@@ -6583,10 +6622,60 @@ function onPurchaseTimeSkip(result) {
     }
 }
 
+// begin cheats (not purchases)
 
+function skipTime (seconds) {
+  if (seconds <= 21600) {
+    player.lastUpdate -= seconds * 1000;
+    return true;
+  } else {
+    alert('Skipped too far!');
+    return false;
+  }
+}
 
+function skipOneRG () {
+  if (skipTime(getReplicantiETA() / 10)) {
+    player.replicanti.amount = player.replicanti.limit;
+  }
+}
 
+function skipRG () {
+  let time = getReplicantiETA() + (player.replicanti.gal - player.replicanti.galaxies) * getReplicantiETA(new Decimal(1));
+  if (skipTime(time / 10)) {
+    player.replicanti.amount = player.replicanti.limit;
+    player.replicanti.galaxies = player.replicanti.gal;
+    updateInfCosts();
+  }
+}
 
+function farmInf (seconds) {
+  let lastInf = player.lastTenRuns[0];
+  let secondsPerRun = lastInf[0][0] / 10;
+  let IPPerRun = lastInf[0][1];
+  let infinitiesPerRun = (secondsPerRun > 5 && player.achievements.includes('r87')) ? 250 : 1;
+  let numRuns = Math.floor(seconds / secondsPerRun);
+  if (skipTime(secondsPerRun * numRuns)) {
+    player.infinityPoints = player.infinityPoints.plus(IPPerRun.times(numRuns));
+    player.infinitied = player.infinitied + infinitiesPerRun * numRuns;
+    startChallenge('');
+  }
+}
+
+function farmEter (seconds) {
+  let lastEter = player.lastTenEternities[0];
+  let secondsPerEter = lastEter[0][0] / 10;
+  let EPPerEter = lastEter[0][1];
+  let eternitiesPerEter = 1;
+  let numEters = Math.floor(seconds / secondsPerEter);
+  if (skipTime(secondsPerEter * numEters)) {
+    player.eternityPoints = player.eternityPoints.plus(EPPerEter.times(numEters));
+    player.eternities = player.eternities + eternitiesPerEter * numEters;
+    eternity(true);
+  }
+}
+
+// end cheats
 
 function updateKongPurchases() {
     console.log("updating kong purchases")

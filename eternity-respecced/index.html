@@ -68,6 +68,7 @@
             <button id="challengesbtn" style="font-family: Typewriter; font-size: 20px" class="tabbtn">Challenges</button>
             <button id="infinitybtn" style="font-family: Typewriter; font-size: 20px; display: none" class="infinitybtn">Infinity</button>
             <button id="eternitystorebtn" style="font-family: Typewriter; font-size: 20px; display: none" class="eternitytabbtn">Eternity</button>
+            <button id="cheatbtn" style="font-family: Typewriter; font-size: 20px; display: none" class="tabbtn">Cheat</button>
             <button id="shopbtn" style="font-family: Typewriter; font-size: 20px" class="tabbtn">Shop</button>
         </div>
         <div id="emptiness" class="tab" style="font-size: 150%">
@@ -88,6 +89,29 @@
                 <button class="greedbtn" onclick="purchaseTimeSkip()">10 Kreds</button>
                 <br><br><br>
                 <span style="font-size: 12px"><b>Disclaimer: These are not required to progress in the game, they are just to help and support the developer.</b></span>
+            </div>
+        </div>
+        <div id="cheat" class="tab" style="font-size: 15px" >
+            <div align="center">
+                <br>
+                <button class="storebtn" style="color:black; height: 35px; font-size: 10px; width: 225px" onclick="skipTime(60)">Get one minute of offline production.</button>
+                <br>
+                <button class="storebtn" style="color:black; height: 35px; font-size: 10px; width: 225px" onclick="skipTime(3600)">Get one hour of offline production.</button>
+                <br>
+                <button class="storebtn" style="color:black; height: 35px; font-size: 10px; width: 225px" onclick="skipTime(21600)">Get 6 hours of offline production.</button>
+                <br>
+                <button class="storebtn" style="color:black; height: 35px; font-size: 10px; width: 225px" onclick="skipOneRG()">Wait until end of replicanti galaxy.</button>
+                <br>
+                <button class="storebtn" style="color:black; height: 35px; font-size: 10px; width: 225px" onclick="skipRG()">Wait until max replicanti galaxies.</button>
+                <br>
+                <button class="storebtn" style="color:black; height: 35px; font-size: 10px; width: 225px" onclick="farmInf(60)">Farm infinities for a minute.</button>
+                <br>
+                <button class="storebtn" style="color:black; height: 35px; font-size: 10px; width: 225px" onclick="farmInf(3600)">Farm infinities for an hour.</button>
+                <br>
+                <button class="storebtn" style="color:black; height: 35px; font-size: 10px; width: 225px" onclick="farmEter(60)">Farm eternities for a minute.</button>
+                <br>
+                <button class="storebtn" style="color:black; height: 35px; font-size: 10px; width: 225px" onclick="farmEter(3600)">Farm eternities for an hour.</button>
+                <br>
             </div>
         </div>
         <div id="eternitystore" class="tab" style="font-size: 15px; width: 60%; margin: 0 auto; display: none" align="center">
@@ -2090,6 +2114,7 @@
 <!-- script type="text/javascript" src="javascripts/decimal.js"></script> -->
 <script type="text/javascript" src="javascripts/breakinfinity.js"></script>
 <script type="text/javascript" src="javascripts/game.js?82"></script>
+<script type="text/javascript" src="javascripts/sha512.js"></script>
 <script type="text/javascript" src="javascripts/dimcostlookuptable.js"></script>
 <script type="text/javascript" src="javascripts/lz-string.js"></script>
 
