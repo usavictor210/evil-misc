@@ -1,0 +1,45 @@
+aqua
+- aqua aqua
+- aqua dryad
+bat
+- bat
+- fruit bat
+cow
+dragon
+eagle
+frog
+goat
+human
+- human
+- elf
+- dwarf
+impala
+jellyfish
+kraken
+- kraken
+- squid
+- octopus
+lion
+- lion
+- cat
+mermaid
+newt
+owl
+phoenix
+quetzal
+rat
+- rat
+- mouse
+sheep
+troll
+- troll
+- goblin
+- hobgoblin
+unicorn
+vulture
+wolf
+- wolf
+- dog
+x
+yak
+zebra
