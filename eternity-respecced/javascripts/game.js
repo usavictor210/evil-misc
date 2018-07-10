@@ -5952,6 +5952,7 @@ function startInterval() {
             document.getElementById("optionsbtn").style.display = "inline-block";
             document.getElementById("statisticsbtn").style.display = "inline-block";
             document.getElementById("achievementsbtn").style.display = "inline-block";
+            // challenges aren't available until you infinity, even if you've eternitied
             if (player.infinitied > 0) {
                 document.getElementById("infinitybtn").style.display = "inline-block";
                 document.getElementById("challengesbtn").style.display = "inline-block";
@@ -6651,27 +6652,27 @@ function skipRG () {
 
 function farmInf (seconds) {
   let lastInf = player.lastTenRuns[0];
-  let secondsPerRun = lastInf[0][0] / 10;
-  let IPPerRun = lastInf[0][1];
+  let secondsPerRun = lastInf[0] / 10;
+  let IPPerRun = lastInf[1];
   let infinitiesPerRun = (secondsPerRun > 5 && player.achievements.includes('r87')) ? 250 : 1;
   let numRuns = Math.floor(seconds / secondsPerRun);
   if (skipTime(secondsPerRun * numRuns)) {
     player.infinityPoints = player.infinityPoints.plus(IPPerRun.times(numRuns));
     player.infinitied = player.infinitied + infinitiesPerRun * numRuns;
-    startChallenge('');
+    setTimeout(function () {startChallenge('')}, 1000);
   }
 }
 
 function farmEter (seconds) {
   let lastEter = player.lastTenEternities[0];
-  let secondsPerEter = lastEter[0][0] / 10;
-  let EPPerEter = lastEter[0][1];
+  let secondsPerEter = lastEter[0] / 10;
+  let EPPerEter = lastEter[1];
   let eternitiesPerEter = 1;
   let numEters = Math.floor(seconds / secondsPerEter);
   if (skipTime(secondsPerEter * numEters)) {
     player.eternityPoints = player.eternityPoints.plus(EPPerEter.times(numEters));
     player.eternities = player.eternities + eternitiesPerEter * numEters;
-    eternity(true);
+    setTimeout(function () {eternity(true)}, 1000);
   }
 }
 
