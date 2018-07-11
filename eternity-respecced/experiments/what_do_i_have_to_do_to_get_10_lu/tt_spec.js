@@ -1,4 +1,4 @@
-let [ip, timeshards, tt, galPower] = process.argv.slice(2).map(x => +x);
+let [ip, timeshards, tt, galPower, secondsInInfinity] = process.argv.slice(2).map(x => +x);
 
 let getGalaxies = function (x) {
   return Math.floor((getEighths(x) - 10) / 60);
@@ -73,22 +73,31 @@ let getTickPower = function (x) {
   return Math.log10(1 / 0.965) * (getGalaxies(x) + getRG(x)) * 3.3
 }
 
-let getTSPower = [null, null, null, null];
+let getTSPower = [null, null, null, null, null, null];
 
-getTSPower[0] = function (x, sh, st) {
+getTSPower[0] = function (x, sh, s, st) {
   return getBaseSac(x) * Math.log(1 + st / 10) / 8;
 }
 
-getTSPower[1] = function (x, sh, st) {
+getTSPower[1] = function (x, sh, s, st) {
   return getTickPower(x) * (getTotalTickGained(sh, st) - getTotalTickGained(sh, 0));
 }
 
-getTSPower[2] = function (x, sh, st) {
+getTSPower[2] = function (x, sh, s, st) {
   return Math.log10(2 ** (galPower * 5)) * 56 * st;
 }
 
-getTSPower[3] = function (x, sh, st) {
+getTSPower[3] = function (x, sh, s, st) {
   return getBoosts(x) * Math.log10(1 + st / 4);
+}
+
+// I think infinity power and infinity points are fairly close, usually.
+getTSPower[4] = function (x, sh, s, st) {
+  return (5 - Math.log(s) / Math.log(10)) * 1.3 * 56 * st;
+}
+
+getTSPower[5] = function (x, sh, s, st) {
+  return Math.log(s) / Math.log(10) * 1.3 * 56 * st;
 }
 
 let cartPow = function (l, n) {
@@ -102,10 +111,10 @@ let cartPow = function (l, n) {
 
 let l = [];
 let h = {};
-for (let i of cartPow([0, 1, 2, 3, 4, 5, 6, 7], 4)) {
+for (let i of cartPow([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], 6)) {
   if (i.map((x) => x * (x + 1) / 2).reduce((a, b) => a + b) <= tt) {
     l.push(i.join(' '));
-    h[i.join(' ')] = i.map((x, i) => getTSPower[i](ip, timeshards, x)).reduce(
+    h[i.join(' ')] = i.map((x, i) => getTSPower[i](ip, timeshards, secondsInInfinity, x)).reduce(
       (a, b) => a + b);
   }
 }
