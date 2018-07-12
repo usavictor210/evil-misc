@@ -93,11 +93,11 @@ getTSPower[3] = function (x, sh, s, st) {
 
 // I think infinity power and infinity points are fairly close, usually.
 getTSPower[4] = function (x, sh, s, st) {
-  return (5 - Math.log(s) / Math.log(10)) * 1.3 * 56 * st;
+  return (5 - Math.log(s) / Math.log(10)) * 1.1 * 56 * st;
 }
 
 getTSPower[5] = function (x, sh, s, st) {
-  return Math.log(s) / Math.log(10) * 1.3 * 56 * st;
+  return Math.log(s) / Math.log(10) * 1.1 * 56 * st;
 }
 
 let cartPow = function (l, n) {

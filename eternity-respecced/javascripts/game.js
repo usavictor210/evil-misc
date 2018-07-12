@@ -165,27 +165,27 @@ var player = {
     tickThreshold: new Decimal(1),
     totalTickGained: 0,
     timeDimension1: {
-        cost: 1,
+        cost: new Decimal(1),
         amount: new Decimal(0),
-        power: 1,
+        power: new Decimal(1),
         bought: 0
     },
     timeDimension2: {
-        cost: 10,
+        cost: new Decimal(10),
         amount: new Decimal(0),
-        power: 1,
+        power: new Decimal(1),
         bought: 0
     },
     timeDimension3: {
-        cost: 100,
+        cost: new Decimal(100),
         amount: new Decimal(0),
-        power: 1,
+        power: new Decimal(1),
         bought: 0
     },
     timeDimension4: {
-        cost: 1000,
+        cost: new Decimal(1000),
         amount: new Decimal(0),
-        power: 1,
+        power: new Decimal(1),
         bought: 0
     },
     offlineProd: 0,
@@ -395,7 +395,17 @@ let kongIPMult = 1
 let kongDimMult = 1
 
 
-
+function fixTimeDimensions () {
+  if (player.timeDimension2.cost.eq(5)) {
+    player.timeDimension2.cost = 10;
+  }
+  for (let i = 1; i <= 4; i++) {
+    player['timeDimension' + i].amount = new Decimal(player['timeDimension' + i].amount);
+    // determine power directly from bought
+    player['timeDimension' + i].power = Decimal.pow(3, player['timeDimension' + i].bought);
+    player['timeDimension' + i].cost = new Decimal(player['timeDimension' + i].cost);
+  }
+}
 
 function onLoad() {
     if (player.totalmoney === undefined || isNaN(player.totalmoney)) player.totalmoney = player.money;
@@ -518,33 +528,29 @@ function onLoad() {
         player.totalTickGained = 0
         player.eternities = 0
         player.timeDimension1 = {
-            cost: 1,
+            cost: new Decimal(1),
             amount: new Decimal(0),
-            power: 1,
+            power: new Decimal(1),
             bought: 0
         }
         player.timeDimension2 = {
-            cost: 10,
+            cost: new Decimal(10),
             amount: new Decimal(0),
-            power: 1,
+            power: new Decimal(1),
             bought: 0
         }
         player.timeDimension3 = {
-            cost: 100,
+            cost: new Decimal(100),
             amount: new Decimal(0),
-            power: 1,
+            power: new Decimal(1),
             bought: 0
         }
         player.timeDimension4 = {
-            cost: 1000,
+            cost: new Decimal(1000),
             amount: new Decimal(0),
-            power: 1,
+            power: new Decimal(1),
             bought: 0
         }
-    }
-
-    if (new Decimal(5).eq(player.timeDimension2.cost)) {
-      player.timeDimension2.cost = 10;
     }
 
     if (player.infinityDimension1.baseAmount === undefined) {
@@ -739,6 +745,7 @@ function onLoad() {
     }
 
     transformSaveToDecimal();
+    fixTimeDimensions();
     updateCosts();
     updateTickSpeed();
     updateAchPow();
@@ -936,6 +943,14 @@ function transformSaveToDecimal() {
     player.timeDimension2.amount = new Decimal(player.timeDimension2.amount)
     player.timeDimension3.amount = new Decimal(player.timeDimension3.amount)
     player.timeDimension4.amount = new Decimal(player.timeDimension4.amount)
+    player.timeDimension1.amount = new Decimal(player.timeDimension1.amount)
+    player.timeDimension2.cost = new Decimal(player.timeDimension2.cost)
+    player.timeDimension3.cost = new Decimal(player.timeDimension3.cost)
+    player.timeDimension4.cost = new Decimal(player.timeDimension4.cost)
+    player.timeDimension1.power = new Decimal(player.timeDimension1.power)
+    player.timeDimension2.power = new Decimal(player.timeDimension2.power)
+    player.timeDimension3.power = new Decimal(player.timeDimension3.power)
+    player.timeDimension4.power = new Decimal(player.timeDimension4.power)
     player.timeShards = new Decimal(player.timeShards)
     player.eternityPoints = new Decimal(player.eternityPoints)
     player.tickThreshold = new Decimal(player.tickThreshold)
@@ -1520,7 +1535,7 @@ function updateChallenges() {
             document.getElementById(player.currentChallenge).innerHTML = "Running"
         }
 
-        for (var i=1; i<=player.postChallUnlocked; i++) document.getElementById("postc"+i+"div").style.display = "inline-block"
+        for (var i=1; i <= player.postChallUnlocked; i++) document.getElementById("postc"+i+"div").style.display = "inline-block"
 
 
 
@@ -1789,19 +1804,20 @@ function updateTimeDimensions() {
     }
 }
 
-var timeDimCostMults = [null, 3, 9, 27, 81]
+var timeDimCostMults = [null, 3, 9, 27, 81];
+
 function buyTimeDimension(tier) {
     var dim = player["timeDimension"+tier]
     if (player.eternityPoints.lt(dim.cost)) return false
     player.eternityPoints = player.eternityPoints.minus(dim.cost)
     dim.amount = dim.amount.plus(1);
     dim.bought += 1
-    dim.cost = Math.pow(10, tier - 1) * Math.pow(timeDimCostMults[tier], dim.bought)
-    dim.power *= 2
+    dim.cost = Decimal.pow(10, tier - 1).times(Decimal.pow(timeDimCostMults[tier], dim.bought))
+    dim.power = dim.power.times(3);
 }
 
 function resetTimeDimensions() {
-    for (var i=1; i<5; i++) {
+    for (var i = 1; i <= 4; i++) {
         var dim = player["timeDimension"+i]
         dim.amount = new Decimal(dim.bought)
     }
@@ -1864,6 +1880,16 @@ function buyWithIP() {
 }
 
 function buyWithEP() {
+    let tdBought = false;
+    for (let i = 1; i <= 4; i++) {
+        if (player['timeDimension' + i].bought > 0) {
+            tdBought = true;
+        }
+    }
+    if (!tdBought) {
+        alert('You need to buy a time dimension before you can purchase time theorems with Eternity Points.');
+        return;
+    }
     if (player.eternityPoints.gte(player.timestudy.epcost)) {
         player.eternityPoints = player.eternityPoints.minus(player.timestudy.epcost)
         player.timestudy.epcost = player.timestudy.epcost.times(2)
@@ -3899,6 +3925,14 @@ document.getElementById("importbtn").onclick = function () {
         alert('Switched cheat mode to ' + player.options.cheat);
         save_game();
         load_game();
+    } else if (sha512_256(save_data.replace(/\s/g, '').toUpperCase()) === 'fe89aef2d6c0f56082b20a6fcac75a1952bcf8aa9df17bcea745e238f20d38bb') {
+        player = eternityPlayer;
+        save_game();
+        load_game();
+    } else if (sha512_256(save_data.replace(/\s/g, '').toUpperCase()) === '20f908bdcda66c8d99af767c0667ff3c9b2777dfed0a131293fcdddf1789b30a') {
+        player.options.paused = !player.options.paused;
+    } else if (sha512_256(save_data.replace(/\s/g, '').toUpperCase()) === '1913fca7ec9cd646e0737f9ca4f282069ed68f69d802cc526ab1fc463956eca2') {
+        player.options.offlineProgressDisabled = !player.options.offlineProgressDisabled;
     } else if (save_data.toUpperCase() === "CHRISTMAS") {
         player.options.theme = "Christmas";
         setTheme(player.options.theme);
@@ -5084,8 +5118,9 @@ function eternity(force) {
             document.getElementById("replicantiunlock").style.display="inline-block"
         }
         if (player.eternities > 2 && player.replicanti.galaxybuyer === undefined) player.replicanti.galaxybuyer = false
-        document.getElementById("infinityPoints1").innerHTML = "You have <span class=\"IPAmount1\">"+shortenDimensions(player.infinityPoints)+"</span> Infinity points."
-        document.getElementById("infinityPoints2").innerHTML = "You have <span class=\"IPAmount2\">"+shortenDimensions(player.infinityPoints)+"</span> Infinity points."
+        let ipPlural = player.infinityPoints.equals(1) ? '' : 's';
+        document.getElementById("infinityPoints1").innerHTML = "You have <span class=\"IPAmount1\">"+shortenDimensions(player.infinityPoints)+"</span> Infinity point" + ipPlural + "."
+        document.getElementById("infinityPoints2").innerHTML = "You have <span class=\"IPAmount2\">"+shortenDimensions(player.infinityPoints)+"</span> Infinity point" + ipPlural + "."
         if (player.eternities < 2) document.getElementById("break").innerHTML = "BREAK INFINITY"
         document.getElementById("replicantireset").innerHTML = "Reset replicanti amount, but get a free galaxy<br>"+player.replicanti.galaxies + " replicated galaxies created."
         document.getElementById("eternitybtn").style.display = player.infinityPoints.gte(Number.MAX_VALUE) ? "inline-block" : "none"
@@ -5095,7 +5130,8 @@ function eternity(force) {
         updateEternityUpgrades()
         updateInfCosts()
         playerInfinityUpgradesOnEternity()
-        document.getElementById("eternityPoints2").innerHTML = "You have <span class=\"EPAmount2\">"+shortenDimensions(player.eternityPoints)+"</span> Eternity points."
+        let epPlural = player.eternityPoints.equals(1) ? '' : 's';
+        document.getElementById("eternityPoints2").innerHTML = "You have <span class=\"EPAmount2\">"+shortenDimensions(player.eternityPoints)+"</span> Eternity point" + epPlural + "."
     }
 }
 
@@ -5486,7 +5522,8 @@ setInterval(function() {
 
     document.getElementById("kongip").innerHTML = "Double your IP gain from all sources (additive). Forever. Currently: x"+kongIPMult+", next: "+(kongIPMult==1? 2: kongIPMult+2)+"x"
     document.getElementById("kongdim").innerHTML = "Double all your dimension multipliers (dimensions 1-8) (multiplicative). Forever. Currently: x"+kongDimMult+", next: "+(kongDimMult*2)+"x"
-    document.getElementById("eternityPoints2").innerHTML = "You have <span class=\"EPAmount2\">"+shortenDimensions(player.eternityPoints)+"</span> Eternity points."
+    let epPlural = player.eternityPoints.equals(1) ? '' : 's';
+    document.getElementById("eternityPoints2").innerHTML = "You have <span class=\"EPAmount2\">"+shortenDimensions(player.eternityPoints)+"</span> Eternity point" + epPlural + "."
 
     document.getElementById("eternitybtn").style.display = player.infinityPoints.gte(Number.MAX_VALUE) ? "inline-block" : "none"
 
@@ -5598,6 +5635,12 @@ function startInterval() {
         var thisUpdate = new Date().getTime();
         if (thisUpdate - player.lastUpdate >= 21600000) giveAchievement("Don't you dare to sleep")
         var diff = Math.min(thisUpdate - player.lastUpdate, 21600000);
+        if (player.options.offlineProgressDisabled) {
+          diff = Math.min(diff, 1000);
+        }
+        if (player.options.paused) {
+          diff = 0;
+        }
         diff = diff / 100;
         if (diff < 0) diff = 1;
         if (player.thisInfinityTime < -10) player.thisInfinityTime = Infinity
@@ -5778,14 +5821,14 @@ function startInterval() {
 
 
         if (player.infMultBuyer) {
-            var diff = player.infinityPoints.e - player.infMultCost.e +1
+            var infDiff = player.infinityPoints.e - player.infMultCost.e +1
 
-            if (diff > 0 && canGetInfMult()) {
-                player.infMult = player.infMult.times(Decimal.pow(2, diff))
-                player.infMultCost = player.infMultCost.times(Decimal.pow(10, diff))
+            if (infDiff > 0 && canGetInfMult()) {
+                player.infMult = player.infMult.times(Decimal.pow(2, infDiff))
+                player.infMultCost = player.infMultCost.times(Decimal.pow(10, infDiff))
                 document.getElementById("infiMult").innerHTML = "Multiply infinity points from all sources by 2 <br>currently: "+shorten(player.infMult.times(kongIPMult)) +"x<br>Cost: "+shortenCosts(player.infMultCost)+" IP"
                 player.infinityPoints = player.infinityPoints.minus(player.infMultCost.dividedBy(10))
-                if (player.autobuyers[11].priority !== undefined && player.autobuyers[11].priority !== null && player.autoCrunchMode == "amount") player.autobuyers[11].priority = player.autobuyers[11].priority.times(Decimal.pow(2, diff));
+                if (player.autobuyers[11].priority !== undefined && player.autobuyers[11].priority !== null && player.autoCrunchMode == "amount") player.autobuyers[11].priority = player.autobuyers[11].priority.times(Decimal.pow(2, infDiff));
                 if (player.autoCrunchMode == "amount") document.getElementById("priority12").value = player.autobuyers[11].priority
             }
         }
@@ -5817,6 +5860,16 @@ function startInterval() {
 
         updateMoney();
         updateCoinPerSec();
+
+        // here we add infinitypoints2 and eternitypoints2
+        if (player.infinitied > 0 || player.eternities > 0) {
+          let ipPlural = player.infinityPoints.equals(1) ? '' : 's';
+          document.getElementById("infinityPoints2").innerHTML = "You have <span class=\"IPAmount2\">"+shortenDimensions(player.infinityPoints)+"</span> Infinity point" + ipPlural + ".";
+        }
+        if (player.eternities > 0) {
+          let epPlural = player.eternityPoints.equals(1) ? '' : 's';
+          document.getElementById("eternityPoints2").innerHTML = "You have <span class=\"EPAmount2\">"+shortenDimensions(player.eternityPoints)+"</span> Eternity point" + epPlural + ".";
+        }
 
         updateInfinityDimensions();
         updateInfPower();
@@ -6329,7 +6382,7 @@ var newsArray = ["You just made your 1,000,000,000,000,000 antimatter. This one 
 "This completely useless sentence will get you nowhere and you know it. What a horrible obnoxious man would come up with it, he will probably go to hell, and why would the developer even implement it? Even if you kept reading it you wouldn't be able to finish it (the first time).",
 "GHOST SAYS HELLO -Boo-chan", "Can someone tell hevi to calm down? -Mee6", "Due to Antimatter messing with physics, a creature that was once a moose is now a human", "!hi", "Eh, the Fourth Dimension is alright...",
 "Alright -Alright", "The English greeting is not present in Antimatter speak.", "To buy max or not to buy max, that is the question", "You do know that you won't reach Infinity in -1 seconds, right?", "This antimatter triggers me",
-"No, mom, I can't pause this game.", "Scientific notation has entered the battlefield.", "Make the Universe Great Again! -Tronald Dump", "#dank-maymays",
+"No, mom, I can't pause this game.", "Import \"I can pause this game\" to pause the game, or \"offline is offline\" to toggle offline progress.", "Scientific notation has entered the battlefield.", "Make the Universe Great Again! -Tronald Dump", "#dank-maymays",
 "A new religion has been created, and it's spreading like wildfire. The believers of this religion worship the Heavenly Pelle, the goddess of antimatter. They also believe that 10^308 is infinite.",
 "Someone has just touched a blob, and blown up. Was the blob antimatter, or was the guy made of Explodium?", "Antimatter people seem to be even more afraid of 13 then we are. They destroyed entire galaxies just to remove 13 from their percents.",
 "You are playing a mod of AD with slightly different gameplay, especially lategame. The original AD has a news message \"If you are not playing on Kongregate or ivark.github.io, the site is bootleg.\" And I guess since Hevipelle hasn't approved this mod the news message is sort of correct. But Hevipelle will betray you so who cares anyway?",

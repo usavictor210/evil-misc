@@ -1,0 +1,74 @@
+<html>
+<head>
+<title>General information about Eternity Respecced</title>
+<link rel="icon" type="image/png" href="icon.png">
+</head>
+<body>
+<div style="text-align: center">
+  <style>
+  blockquote {
+    background: #eee;
+    border-radius: 5px;
+  }
+  blockquote p {
+    padding: 15px;
+  }
+  </style>
+<p>
+[Note that some of the below is for effect, and in reality Antimatter Dimensions is one of my favorite games, it's very well balanced even if it's not for a good mathematical reason, and I thank Hevipelle for making it.]
+</p>
+<p>
+TLDR: I made a mod to Antimatter Dimension's eternity, it's <a href='../index.html'>here,</a> it's currently a lot shorter and somewhat slower than the original is now, it only becomes that different at eternity so you should probably start with a save at the start of second eternity (if you don't have such a save, import "et in aeternum ego").
+</p>
+<p>
+Here's a news message added to Antimatter Dimensions in the dilation update:
+<blockquote>
+<p>
+  The Holy trinity of Hevipelle, Antimatter, Infinity Points, and Eternity Points. These 3 resources let us access Hevi’s gift, Time Theorems. And with these Time Theorems, we reach out to Hevi, and call, “Hevi, bless us on this fine day!” And Hevi does. He give us the blessing of Time Studies. These Time Studies were blessings so powerful, Hevi restricted their power. He said, “ I will give you a choice of three paths” and then humanity chose. The short, cheap route of Normal Dimensions, giving instant gratification, the powerful choice of Infinity Dimensions, which were a fast, middle ground path, or Time Dimension, the long wait, and struggle, of humanity. Then, as humanity chose, a crack broke the earth. A serpent snaked out and sneered to humanity, “I will offer the powerful choice of a ninth dimension! I am Slabdrill, lord of all Unhevi. Humanity rose and said “ Begone Slabdrill! We want none of your foul Heresy!” And Hevi rose as well, and smote Slabdrill with his godlike power. As Slabdrill’s corpse fell into the earth, he cried “ this will not be the last of me! Hevi will betr-“ and he fell in the Abyss of matter. Hevi gifted humanity with Eternity upgrades, which boosted infinity dimensions and time dimensions. And Hevi gave humanity his greatest gift . EP multipliers. He said, these will multiply all EP gained by 5, but their cost will increase 25 times. Use them wisely. And Humanity journeyed off with their new power, as Slabdrill’s words echoed in their heads.
+</p>
+</blockquote>
+Much of the above story is a description of Antimatter Dimension's early eternity, coupled with the fairly usual legend about the ninth dimension being a lie and needing to stay that way. However, there is a mysterious part (and not just the strange spacing and quoting); "Hevi will betr-". I propose that the correct continuation is "Hevi will betray you", and that it is indeed true. Indeed, if you have reached the end of the content, you might think you have been enjoying Hevi's gifts, but Hevi has betrayed you no less than 7 times.
+</p>
+<p>
+The first betrayal was the galaxy price increase. Indeed, (I believe that) a fair part of the reason so many time studies are even needed (in the most recent version, there appear to be 58 studies, not counting the secret one or eternity challenges) is that the time studies offset the lack of galaxies. Now, you might say "Hevipelle can do whatever he wants, who cares about the galaxy price increase?" However, I would disagree. Firstly, the galaxy price increase is not announced (unless you read the howto page). Compare to the dimension and tickspeed price increases after breaking infinity, which are mentioned in the break infinity button's tooltip.
+</p>
+<p>
+Secondly, and more importantly, it's mathematically inelegant. From 1e35 IP on, we had infinity dimensions providing more or less a fixed fraction of the dimension multipliers. We had dimension boosts and x2 for buying dimensions, which became less and less important (as a part of everything overall) over time. And we had tickspeed and galaxies. Galaxies were proportional to the square root of antimatter's exponent, tickspeed upgrades were also proportional to the square root of antimatter's exponent, the strength of tickspeed upgrades was proportional to the exponential of the square root of antimatter's exponent, and overall the benefit from tickspeed and galaxies was proportional to antimatter's exponent. However, due to the 308 "free" starting tickspeed upgrades pre-infinity, which did not affect the price inflation, the fraction of multipliers tickspeed upgrades and galaxies accounted for slowly went down as you got further. This decrease and the decreasing role of dimension boosts and x2 multipliers were countered via infinity challenges and replicanti.
+</p>
+<p>
+But with time dimensions and increased galaxy requirements, we need to redo the math. Galaxies are now proportional to the fourth root of antimatter's exponent. Bought tickspeed upgrades are still proportional to the square root of antimatter's exponent, but tickspeed upgrades from time dimensions are proportional to timeshards' exponent, which is small but ultimately proportional to antimatter's exponent. So overall tickspeed upgrades is in the short run proportional to the square root of antimatter's exponent and in the long run proportional to antimatter's exponent itself. One can show that this gives us too little power in the short run and too much in the long run, eventually leading to runaway inflation if nothing is done. Time studies fix the first problem, but what will fix the second? And the above doesn't even consider that replicanti galaxies have not been nerfed, are also proportional to the square root of antimatter's exponent (though, like tickspeed upgrades, you start without that many), and will make things even worse in the long run if nothing is done.
+</p>
+<p>
+The second betrayal was the first time dimension and EP multiplier price increase. This one, people have noticed and asked about (since it's unexplained). We can now see that its motivation was to avoid the runaway inflation from time dimensions and galaxies. Here the time dimensions were the thing nerfed, but not in the type of way sufficient to stop the inflation from later again becoming a problem.
+</p>
+<p>
+The third betrayal was the soon-after nerf to number of replicanti galaxies. When you get 100 of them, their price inflation becomes about 10 times worse. This is again a stopgap fix that will push the problem down the road, but here it's pushed far enough that it doesn't matter that much. In endgame you'll have about 600 normal replicanti galaxies, which is few enough that they won't completely dominate. However, if there is much more new content, they will need to be nerfed again.
+</p>
+<p>
+The fourth betrayal was the second time dimension and EP multiplier price increase. This is just like the first such price increase, and there's not much else to say about it.
+</p>
+<p>
+The fifth betrayal was the third time dimension and EP multiplier price increase. This is just like the first and second.
+</p>
+<p>
+The sixth betrayal was the exponential increase in galaxy prices after you get 800 galaxies. This doesn't actually solve the problem in the long run, since you still have replicanti galaxies to worry about, but it does solve the problem as far as normal galaxies go.
+</p>
+<p>
+The seventh betrayal was the fourth EP multiplier price increase. This doesn't actually mathematically solve the problem, since replicanti galaxies and time dimensions are left exactly the same. Indeed, I suspect that if you hacked yourself enough EP (or did really long runs) you'd find yourself over the wall here and going off to true infinity.
+</p>
+<p>
+Of course, I'm not even counting the time studies and challenges whose rewards max out for no particular reason here.
+</p>
+<p>
+Eternity Respecced is a mod I'm making of Antimatter Dimensions with the intension of not betraying you and thinking about the mathematical impacts of things before I do them. If I do need to nerf anything, it will be a consistent, whole-game nerf, not a nerf that only takes effect at a certain point.
+</p>
+<p>
+The game is <a href='../index.html'>here.</a> Everything before eternity is the same, so start by importing a save at the start of second eternity, or by using the cheat code "et in aeternum ego". None of the betrayals are there, and I don't think there are any new ones. There are many fewer time studies. "Do you really need a guide for this?" is now sarcastic in the other direction (it should really be called "1e(1 million) is a lot", but I didn't want to create new achievement art). There aren't yet any eternity challenges (they will probably get added) or dilation (it probably won't). The current endgame is roughly (it's not less, it might be more) 5e6 eternity points, 1e2300 infinity points, 70 TT, eternity in 10 seconds, and all of the current achievements and eternity upgrades. The game's speed (in terms of how quickly you progress through material) is also more like the original game's early Eternity Challenges speed (slow) than the original game's early eternity speed (fast).
+</p>
+<p>
+One might wonder how Eternity Respecced avoids going off to true infinity due to galaxies and time dimensions being too powerful. The answer is that tickspeed upgrades are not proportional to the exponent of timeshards, but instead to the square root of that exponent. This is achieved via time dimension tickspeed upgrade cost scaling. I really don't see why Antimatter Dimensions didn't do this, since it makes balancing a fair bit cleaner.
+</p>
+<p>
+If you find a bug, hit a wall (more than 10 hours with no major progress), experience growth off to true infinity, get to the end of current content, have questions about the math/arithmetic in the design, or have any type of questions, comments, or suggestions, create a github issue or message me on the official AD discord.
+</p>
+</div>
